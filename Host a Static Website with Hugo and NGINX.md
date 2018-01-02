@@ -277,11 +277,7 @@ There are a number of commands that will become necessary for starting, stopping
     // Starting Nginx server
     sudo systemctl start nginx
 
-Edit the Nginx server configuration with the [Vim](http://www.vim.org/) text editor:
-
-    sudo vim /etc/nginx/sites-available/default
-
-The most challenging aspect of making your Hugo blog publicly available with Nginx is getting the configuration correct. The arrangement below shows the configuration for two server applications. The first allows `http://example.com/` to access a server application running on port 8081 and the second `http://blog.example.com/` will access our Hugo blog running on port 1313. 
+Making your Hugo blog publicly available with Nginx can be challenging. Most important is getting the Nginx configuration correct. The arrangement below shows a configuration for two server applications. The first allows `http://example.com/` to access a server application running on port 8081. The second `http://blog.example.com/` will access a Hugo blog running on port 1313. 
 
 ```bash
 # Default server configuration
@@ -321,7 +317,34 @@ server {
 }
 ```
 
-Press the **Escape** key, then press **:wq** to end editing of the config file. Execute the command with the **Enter** key.
+For the purposes of this guide, begin by editing your Nginx server configuration with the [Vim](http://www.vim.org/) text editor:
+
+    sudo vim /etc/nginx/sites-available/default
+
+Add the second server block, as shown in the configuration above, to your existing Nginx server configuration.
+
+{{< note >}}
+Replace `example.com` with your domain name.
+{{< /note>}}
+
+```bash
+server {
+        listen 80;
+
+        #root /var/www/html;
+
+        server_name blog.example.com;
+
+        location / {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header Host $host;
+                proxy_pass http://127.0.0.1:1313;
+        }
+}
+```
+
+To end editing of the config file press the **Escape** key, then press **:wq**. Execute the command with the **Enter** key.
 
 {{< note >}}
 [Nano editor](https://www.nano-editor.org/) can also be used to edit the Nginx configuration file.
@@ -342,12 +365,12 @@ Press the **Escape** key to enter command mode. Command mode allows several acti
 
 2. Insert Mode
 
-Press `i` to enter insert mode. Insert mode allows text to be added or deleted from the file.
+Press `i` to enter insert mode. Insert mode allows text to be added or deleted from the config file.
 
 
 ## Running Hugo Server at the Command Line
 
-An equally challenging issue to configuring Nginx, is issuing the correct command to get the Hugo blog running correctly. Consider the following command which s runs blog articles in draft stage using [Material Design](https://themes.gohugo.io/material-design/) theme.
+An equally important issue to configuring Nginx correctly, is issuing the correct command to start the Hugo server. Consider the following command which runs blog articles in draft stage using the [Material Design](https://themes.gohugo.io/material-design/) theme.
 
     hugo server -t material-design -D
 
@@ -372,10 +395,9 @@ Serving pages from memory
 Running in Fast Render Mode. For full rebuilds on change: hugo server --disableFastRender
 Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
 Press Ctrl+C to stop
-
 ```
 
-Note that the web server is available at `http://locahost:1313/`. If you attempt to enter your domain name `http://blog.example.com/` in a web browser, content from your blog will appear. However, it will appear without the CSS formatting. 
+Note that the web server is available at `http://locahost:1313/`. If you attempt to enter your domain name `http://blog.example.com/` in a web browser, content from your blog will appear. However, it will appear without CSS formatting. 
 
 <p align="center">
   <img src="/images/NoCSS.jpg" alt="Website without CSS" /> 
@@ -387,20 +409,21 @@ Viewing the web browser page source will show that links to page CSS files inclu
   <img src="/images/LocalhostCSS.jpg" alt="Page source with localhost CSS" /> 
 </p>
 
-Clearly what we need is something similar to `http://example.com/css/style.css`. We can achieve the correct CSS links by adding the baseUrl and appendPort setting in the command to run the Hugo server.
+Clearly, what we need is something similar to `http://example.com/css/style.css`. We can achieve the correct CSS links by adding the baseUrl and appendPort setting in the command to run the Hugo server.
 
     hugo server -t material-design -D --baseUrl="http://blog.example.com" --appendPort=false &
 
 {{< note >}}
-  1. If not already in the directory containing the Hugo files, change into that directory: `cd hugo`
+  1. If not already in the directory containing the Hugo files, change into that directory:
 
-  2. Replace `example.com` in the command above with your domain name as shown in the command below:
+  2. Replace `example.com` in the command above with your domain name.
 {{< /note >}}
 
+    cd ~
+    cd hugo
     hugo server -t YOUR-TEMPLATE-NAME -D --baseUrl="http://blog.YOUR-DOMAIN-NAME" --appendPort=false &
 
-
-This command outputs the listing below to the Terminal console.
+Running the Hugo server command outputs the listing below to the Terminal console.
 
 ```bash
 Started building sites ...
@@ -423,13 +446,13 @@ Web Server is available at http://blog.example.com/ (bind address 127.0.0.1)
 Press Ctrl+C to stop
 ```
 
-Hugo is now available at `http://blog.example.com/` and not `http://localhost:1313` as before in the Terminal console. 
+Hugo is now available at `http://blog.example.com/` and not `http://localhost:1313` as shown previously. 
 
 {{< note >}}
-Notice the use of the & at the end of the command to run Hugo. This keeps the Hugo server running and allows us to logout and close the console Terminal. Start typing then hit the Return key to return to the command prompt without stopping the Hugo server.
+Notice the use of the & at the end of the command to run Hugo. This keeps the Hugo server running and allows us to logout and close the console Terminal. Start typing a few characters then press the `Return` key to display the command prompt without stopping the Hugo server.
 {{< /note >}}
 
-We should now be able to access our blog article in a web browser with `http://blog.example.com/`. A view of the page source now shows css links such as `http://blog.example.com/css/style.css`.
+We should now be able to access our blog article in a web browser with `http://blog.example.com/`. Viewing the page source now shows CSS links such as `http://blog.example.com/css/style.css`.
 
 <p align="center">
   <img src="/images/CSSLink.jpg" alt="Page source with correct CSS" /> 
@@ -438,18 +461,18 @@ We should now be able to access our blog article in a web browser with `http://b
 
 ## Tips and Tricks
 
-Much like installing any other software, setting up Hugo can present unexpected challenges. A few of the most typical issues are addressed here.
+Setting up Hugo can present unexpected challenges. A few of the most typical issues are addressed here.
 
 ### Config File not Found Error
 
-Running the command to start the Hugo server from outside the Hugo directory will result in a Config file not found error. Change into the Hugo directory before attempting to start the Hugo server.
+Running the command to start the Hugo server from outside the Hugo directory will result in a "Config file not found error". To solve this issue, change into the Hugo directory before attempting to start the Hugo server.
 
     Error: Unable to locate Config file. Perhaps you need to create a new site.
        Run `hugo help new` for details. (Config File "config" Not Found in "[/home/username]")
 
 ### Failed to Stop Nginx.Service
 
-It is very possible that you may attempt to stop or reload the Nginx server and get the following console output:
+It is very possible that you may attempt to stop or reload the Nginx server and see the following console output:
 
     Failed to stop nginx.service: The name org.freedesktop.PolicyKit1 was not provided by any .service files
     See system logs and 'systemctl status nginx.service' for details.
@@ -458,7 +481,7 @@ To start, stop, or reload Nginx it is necessary to use the `sudo` prefix along w
 
 ### Hugo Server did not Shutdown Using **CTRL+C**
 
-There are times when shutting down the server with **CTRL+C** doesn't do the trick. This may be apparent the next time we attempt to start-up the Hugo server. For example, the Terminal console may display something to the effect, "Web Server is available at `http://localhost:12345`". 
+There are times when shutting down the server with **CTRL+C** doesn't do the trick. Quite often, this is only apparent the next time we attempt to startup the Hugo server. For example, the Terminal console may display output to the effect, "Web Server is available at `http://localhost:12345`". 
 
 Here is a scenario that can result in this condition:
 1. **CTRL+C** was used to shutdown the Hugo server. 
@@ -474,7 +497,7 @@ In this scenario the server did not shutdown as expected with **CTRL+C**. As a r
 For the purposes of this guide, Hugo running on any port other than port 1313 is not desired because our Nginx server configuration is set to `proxy_pass http://127.0.0.1:1313;`.
 {{< /note >}}
 
-It is now necessary to shutdown the server running on port 1313. Shutting down the process on port 1313 can be done with:
+It is now necessary to shutdown the old server instance running on port 1313. Shutting down the process on port 1313 can be done with the following command:
 
     sudo kill $(sudo lsof -t -i:1313)
 
@@ -482,7 +505,7 @@ Terminal output should be similar to:
 
     [1]-  Terminated     hugo server -t material-design -D --baseUrl="http://blog.example.com" --appendPort=false
 
-However, stopping the process on port 1313 is not enough since a new Hugo process was fired up on port 12345 when port 1313 was not available. In this situation running command `ps aux | grep hugo` should show that there is more than one Hugo servers running. Each has a different process id.
+However, stopping the process on port 1313 is not enough since a new Hugo instance was fired up on port 12345 when port 1313 was not available. In this situation, running command `ps aux | grep hugo` should show that there is more than one Hugo servers running. Each has a different process id.
 
 {{< note >}}
 `username` will be replaced with the username you used to login to Linode.
@@ -497,7 +520,7 @@ However, stopping the process on port 1313 is not enough since a new Hugo proces
 --baseUrl=`http://blog.example.com` --appendPort=false was shorted above to --baseUrl=...
 {{< /note >}}
 
-A better approach is to use the pkill command.
+A better approach is to use the `pkill` command.
 
     pkill hugo
 
@@ -507,13 +530,13 @@ Enter the `ps aux | grep hugo` command to show that no hugo servers are runnng a
 
 ### Web Browser Returns Bad Gateway
 
-"Bad Gateway" can be returned by the web browser if the Hugo server is not running or is not running on port 1313. 
+"Bad Gateway" can be returned by the web browser if the Hugo server is not running, or is not running on port 1313. 
 
 <p align="center">
   <img src="/images/BadGateway.jpg" alt="Bad Gateway web page" /> 
 </p>
 
-In this case, `ps aux | grep hugo` command can be used to verify that the server is not running.
+In this case, `ps aux | grep hugo` command can be used to verify that the server is not running on port 1313.
 
 
 ## Learning more about Hugo
