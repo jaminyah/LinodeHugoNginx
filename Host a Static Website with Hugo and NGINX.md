@@ -45,7 +45,7 @@ Throughout this guide commands will be given with example variables to provide g
 | username                 | Replace with Linode login user name                   |
 
 
-Begin by completing the Getting Started guide and Securing Your Server guide if you are getting started with Linode for the first time.
+Begin by completing the following guides if you are getting started with Linode for the first time.
 
 1.  Familiarize yourself with our [Getting Started](/docs/getting-started) guide and complete the steps for setting your Linode's hostname and timezone. The guide explains how to sign-up, deploy a Ubuntu 16.04 image and connect to your Linode server using the secure shell protocol (SSH). For the purpose of installing Hugo and configuring Nginx, it is not necessary to do the "Setting the Hostname" steps.
 
@@ -69,9 +69,9 @@ Configuration steps for the Linode side can be found at [DNS Manager Overview](/
 
 ### Set Linode Name Servers on Web Hosting
 
-The typical scenario is that you purchased and registered a domain name through one of the popular shared web hosting provider. Now you need to have the domain name point to your Linode server. Navigate to the Control Panel on your shared web hosting.
+The typical scenario is that you purchased and registered a domain name through one of the popular providers such as Bluehost, Godaddy, or Fatcow. Now, you need to point the domain name to your Linode server. Navigate to the Control Panel on your provider's Control Panel.
 
-We will use Fatcow shared web hosting in this example.
+We will use Fatcow's Control Panel in this example.
 
 <p align="center">
   <img src="/images/ControlPanel.jpg" alt="Control Panel" /> 
@@ -108,18 +108,18 @@ The following name server entries should be made:
 * ns4.linode.com
 * ns5.linode.com
 
-It is best of follow the instructions provided for your specific scenario and registrar. The scenario discussed above applies to previously purchased through one of the common registrars such as Bluehost, Godaddy, or Fatcow.
+The above is given as an example. Follow the instructions for your specific domain provider.
 
 
 ## Adding Blog Subdomain
 
-One to the things you may want to do is add a subdomain to your domain and have this url point to your blog articles. For example if your domain is `http://example.com` adding a blog subdomain creates `http://blog.example.com`. Log into your Linode server account and select the DNS Manager tab.
+One to the things you may want to do is add a subdomain to your domain and have this URL point to your blog articles. For example if your domain is `http://example.com` adding a blog subdomain creates `http://blog.example.com`. Log into your Linode server account and select the DNS Manager tab.
 
 <p align="center">
   <img src="/images/AAAA.jpg" alt="AAAA records" /> 
 </p>
 
-In the section for A/AAAA Records select the link 'Add a new A record'.  For Hostname add `http://blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
+In the section for A/AAAA Records select the link "Add a new A record".  For Hostname add `http://blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
 
 <p align="center">
   <img src="/images/EditAAAA.jpg" alt="Editing AAAA records" /> 
@@ -141,10 +141,12 @@ Enter the `username` that you use to log into your Linode server. This user must
 Enter the `IPAddress` of your Linode server.
 {{< /note>}}
 
-Further clarification on logging in with SSH can be found in the [Getting started](/docs/getting-started) guide in the section titled *Log In for the First Time*. Create a directory named hugo and change into this directory. 
+Further clarification on logging in with SSH can be found in the [Getting started](/docs/getting-started) guide in the section titled "*Log In for the First Time*". 
 
 
 ## Installing Hugo
+
+Create a directory named `hugo` and change into this directory.
 
     cd ~
     mkdir hugo
@@ -223,7 +225,7 @@ If you are getting started with creating blog articles with Hugo the best source
 
 ## Installing Nginx
 
-Now that you have a basic Hugo blog post created, the next issue is making it accessible to the public using your domain name. Hugo blog has a built-in server that runs, by default, at port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
+Now that you have a basic Hugo blog post created, the next issue is making it accessible to the public using your domain name. Hugo blog has a built-in server that runs, by default, on port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
 
 Providing direct port access can increase vulnerabilities to web based attacks. Using Nginx protects your Linode server against common vulnerabilities and can be configured to make several server instances publicly accessible on port 80 by adding subdomains to your domain name. 
 
@@ -327,10 +329,11 @@ Press the **Escape** key, then press **:wq** to end editing of the config file. 
 
 ### Vim Editor Basics
 
-The Vim editor has two modes of operation. 
+The Vim editor has two modes of operation.
+
 1. Command Mode
 
-  Press the **Escape** key to enter command mode. Command mode allows several actions such as saving the file and exiting, deleting a character or a line of text, and exiting without saving changes to the file.
+Press the **Escape** key to enter command mode. Command mode allows several actions such as saving the file and exiting, deleting a character or a line of text, and exiting without saving changes to the file.
 
   * dd  - Delete a line of text
   * x   - Delete a single character
@@ -339,7 +342,7 @@ The Vim editor has two modes of operation.
 
 2. Insert Mode
 
-  Press **i** to enter insert mode. Insert mode allows text to be added to or deleted from the file.
+Press `i` to enter insert mode. Insert mode allows text to be added or deleted from the file.
 
 
 ## Running Hugo Server at the Command Line
@@ -457,17 +460,19 @@ To start, stop, or reload Nginx it is necessary to use the `sudo` prefix along w
 
 There are times when shutting down the server with **CTRL+C** doesn't do the trick. This may be apparent the next time we attempt to start-up the Hugo server. For example, the Terminal console may display something to the effect, "Web Server is available at `http://localhost:12345`". 
 
-Here is the scenario that can result in this condition:
+Here is a scenario that can result in this condition:
 1. **CTRL+C** was used to shutdown the Hugo server. 
-2. We regained the command prompt and so think the server stopped running
-3. Later, we issue the command to start the Hugo server and get the console output, "Web Server is available at `http://localhost:12345`".
+2. The command prompt returned. This gives the impression that the server has stopped running.
+3. At some point later, we issue the command to start the Hugo server. Now, "Web Server is available at `http://localhost:12345`" appears in the console output.
 
-This scenario means that the server did not shutdown as expected with **CTRL+C** and so an error statement was issued and a new server instance was created at port 12345. 
+In this scenario the server did not shutdown as expected with **CTRL+C**. As a result an error statement was issued and a new server instance was created on port 12345. 
     
     ERROR 2017/12/30 12:18:30 port 1313 already in use, attempting to use an available port
     Started building sites ...
 
-For the purposes of this guide, Hugo running at any port other than port 1313 is not desired. This is because our Nginx server configuration expects that the Hugo server will be running at port 1313. Nginx server block configuration is set to `proxy_pass http://127.0.0.1:1313;`.
+{{< note >}}
+For the purposes of this guide, Hugo running on any port other than port 1313 is not desired because our Nginx server configuration is set to `proxy_pass http://127.0.0.1:1313;`.
+{{< /note >}}
 
 It is now necessary to shutdown the server running on port 1313. Shutting down the process on port 1313 can be done with:
 
@@ -477,7 +482,7 @@ Terminal output should be similar to:
 
     [1]-  Terminated     hugo server -t material-design -D --baseUrl="http://blog.example.com" --appendPort=false
 
-However, stopping the process on port 1313 is not enough since a new Hugo process was fired up on port 12345 because port 1313 was not available. In this situation running command `ps aux | grep hugo` should show that there are more than one Hugo servers running. Each is running with a different Process ID.
+However, stopping the process on port 1313 is not enough since a new Hugo process was fired up on port 12345 when port 1313 was not available. In this situation running command `ps aux | grep hugo` should show that there is more than one Hugo servers running. Each has a different process id.
 
 {{< note >}}
 `username` will be replaced with the username you used to login to Linode.
@@ -496,29 +501,19 @@ A better approach is to use the pkill command.
 
     pkill hugo
 
-Then show the list of hugo processes.
-
-    ps aux | grep hugo
-
-Which should return output:
+Enter the `ps aux | grep hugo` command to show that no hugo servers are runnng as shown:
 
     username 16628  0.0  0.1  14224  1020 pts/1    S+   15:29   0:00 grep --color=auto hugo
 
 ### Web Browser Returns Bad Gateway
 
-Bad Gateway can be returned by the web browser if the Hugo server is not running or is not running at port 1313. 
+"Bad Gateway" can be returned by the web browser if the Hugo server is not running or is not running on port 1313. 
 
 <p align="center">
   <img src="/images/BadGateway.jpg" alt="Bad Gateway web page" /> 
 </p>
 
-One way to find out more about status of the Hugo server is to issue command:
-
-    ps aux | grep hugo
-
-If Hugo is stopped the command returns an output similar to:
-
-    username 15873  0.0  0.1  14224  1024 pts/2    S+   12:29   0:00 grep --color=auto hugo
+In this case, `ps aux | grep hugo` command can be used to verify that the server is not running.
 
 
 ## Learning more about Hugo
