@@ -344,7 +344,7 @@ server {
 }
 ```
 
-To end editing of the config file press the **Escape** key, then press **:wq**. Execute the command with the **Enter** key.
+To end editing of the config file press the **Escape** key, then enter **:wq**. Execute the command with the **Enter** key.
 
 {{< note >}}
 [Nano editor](https://www.nano-editor.org/) can also be used to edit the Nginx configuration file.
