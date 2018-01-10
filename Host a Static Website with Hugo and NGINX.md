@@ -223,6 +223,16 @@ Flags:
 If you are getting started with creating blog articles with Hugo the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*.
 
 
+## Building and Updating a Static Site
+
+In general, developers focus on writting code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss building a static website and moving it from the development environment to the production server. Then, we will address issues related to keeping the site updated.
+
+<p align="center">
+  <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
+</p>
+
+
+
 ## Installing Nginx
 
 Now that you have a basic Hugo blog post created, the next issue is making it accessible to the public using your domain name. Hugo blog has a built-in server that runs, by default, on port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
