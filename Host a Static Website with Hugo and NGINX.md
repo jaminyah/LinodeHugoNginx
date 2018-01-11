@@ -231,7 +231,7 @@ Generally, developers focus on writting code, unit testing and incorporating cod
   <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
 </p>
 
-There are several approaches to deploying an application, that has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's discuss using `Rsync` at the commandline.
+There are several approaches to deploying an application, that has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's discuss using `Rsync` at the command line.
 
 ### Rsync
 
