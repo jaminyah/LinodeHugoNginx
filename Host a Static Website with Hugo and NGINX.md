@@ -246,12 +246,12 @@ Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a 
       |_____js\script.js
 ```
 
-Once all the bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to our Linode production server. We can push the contents of the public directory to our Linode production server with the command `rsync -zP public username@12.34.56.789:~/` as shown below.
+Once all bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server with the command `rsync -zP public username@12.34.56.789:~/`.
 
                             `rsync -zP public linode-username@12.34.56.789:~/`
-                                    ||   |                                  | 
-                          compress _||   |                                  |__ Linode home directory
-                        progress ___|    |     
+                                    ||   |                         |        | 
+                          compress _||   |                         |        |__ Linode home directory
+                    show progress ___|   |                         |__ Linode server IP address
                 static site directory ___|
 
 ```bash
@@ -269,17 +269,6 @@ public/sites/
 public/sites/.DS_Store
         6148 100%  857.70kB/s    0:00:00 (xfer#2, to-check=8/12)
 public/sites/mysite/
-public/sites/mysite/.DS_Store
-        6148 100%  333.55kB/s    0:00:00 (xfer#3, to-check=6/12)
-public/sites/mysite/index.html
-         468 100%   16.93kB/s    0:00:00 (xfer#4, to-check=5/12)
-public/sites/mysite/css/
-public/sites/mysite/css/style.css
-          73 100%    1.93kB/s    0:00:00 (xfer#5, to-check=3/12)
-public/sites/mysite/images/
-public/sites/mysite/js/
-public/sites/mysite/js/script.js
-         105 100%    2.18kB/s    0:00:00 (xfer#6, to-check=0/12)
 
 sent 1688 bytes  received 188 bytes  288.62 bytes/sec
 total size is 19090  speedup is 10.18
@@ -287,7 +276,7 @@ machine-name:~ username$
 
 ```
 
-Logging into the Linode server and listing the directories should show:
+Logging into the Linode server and using the `ls` command should show the "public" directory. Included in this directory is the contents of the static site.
 
 ```bash
 username@localhost:~$ ls
@@ -300,18 +289,11 @@ sites
 ./sites:
 mysite
 
-./sites/mysite:
-css  images  index.html  js
-
-./sites/mysite/css:
-style.css
-
-./sites/mysite/images:
-
-./sites/mysite/js:
-script.js
-
 ```
+
+### Travis-CI
+
+/// *** TBD ***
 
 
 ## Installing Nginx
