@@ -254,6 +254,9 @@ Once all bugs are fixed, the website works as expected, and all files are in ver
                     show progress ___|   |                         |__ Linode server IP address
                 static site directory ___|
 
+
+Here is a sample Terminal console output.
+
 ```bash
 machine-name:~ username$ ls
 public
