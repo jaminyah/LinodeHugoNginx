@@ -225,12 +225,91 @@ If you are getting started with creating blog articles with Hugo the best source
 
 ## Building and Updating a Static Site
 
-In general, developers focus on writting code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss building a static website and moving it from the development environment to the production server. Then, we will address issues related to keeping the site updated.
+Generally, developers focus on writting code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss building a static website and moving it from the development environment to the production server. Then, we will address issues related to keeping the site updated.
 
 <p align="center">
   <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
 </p>
 
+There are several approaches to deploying an application, that has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's discuss using `Rsync` at the commandline.
+
+### Rsync
+
+Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a tool for "transferring and synchronizing files across computer systems." Consider a static website, mysite, on our local development machine. It is the home directory with the following folder structure:
+
+|__public
+   |__sites
+   |____mysite
+      |_____index.html
+      |_____css\style.css
+      |_____js\script.js
+
+Once all the bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to our Linode production server. We can push the contents of the public directory to our Linode production server with the command `rsync -zP public username@12.34.56.789:~/` as shown below.
+
+                            `rsync -zP public linode-username@12.34.56.789:~/`
+                                    ||   |                                  | 
+                          compress _||   |                                  |__ Linode home directory
+                        progress ___|    |     
+                static site directory ___|
+
+```bash
+machine-name:~ username$ ls
+public
+
+machine-name:~ username$ rsync -zP public username@12.34.56.789:~/
+username@12.34.56.789's password: 
+building file list ... 
+12 files to consider
+public/
+public/.DS_Store
+        6148 100%    0.00kB/s    0:00:00 (xfer#1, to-check=10/12)
+public/sites/
+public/sites/.DS_Store
+        6148 100%  857.70kB/s    0:00:00 (xfer#2, to-check=8/12)
+public/sites/mysite/
+public/sites/mysite/.DS_Store
+        6148 100%  333.55kB/s    0:00:00 (xfer#3, to-check=6/12)
+public/sites/mysite/index.html
+         468 100%   16.93kB/s    0:00:00 (xfer#4, to-check=5/12)
+public/sites/mysite/css/
+public/sites/mysite/css/style.css
+          73 100%    1.93kB/s    0:00:00 (xfer#5, to-check=3/12)
+public/sites/mysite/images/
+public/sites/mysite/js/
+public/sites/mysite/js/script.js
+         105 100%    2.18kB/s    0:00:00 (xfer#6, to-check=0/12)
+
+sent 1688 bytes  received 188 bytes  288.62 bytes/sec
+total size is 19090  speedup is 10.18
+machine-name:~ username$ 
+
+```
+
+Logging into the Linode server and listing the directories should show:
+
+```bash
+username@localhost:~$ ls
+Downloads  hugo  public
+username@localhost:~$ cd public/
+username@localhost:~/public$ ls -R
+.:
+sites
+
+./sites:
+mysite
+
+./sites/mysite:
+css  images  index.html  js
+
+./sites/mysite/css:
+style.css
+
+./sites/mysite/images:
+
+./sites/mysite/js:
+script.js
+
+```
 
 
 ## Installing Nginx
