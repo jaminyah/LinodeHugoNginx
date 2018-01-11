@@ -237,12 +237,14 @@ There are several approaches to deploying an application, that has been through 
 
 Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a tool for "transferring and synchronizing files across computer systems." Consider a static website, mysite, on our local development machine. It is the home directory with the following folder structure:
 
+```bash
 |__public
    |__sites
    |____mysite
       |_____index.html
       |_____css\style.css
       |_____js\script.js
+```
 
 Once all the bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to our Linode production server. We can push the contents of the public directory to our Linode production server with the command `rsync -zP public username@12.34.56.789:~/` as shown below.
 
