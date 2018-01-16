@@ -342,6 +342,10 @@ Review the status of the application.
 
 After creating the application, several options, to select a programming language, are presented. Explore a few language options to see the wercker.yml template that is created for each. Later in the article, we will create a wercker.yml file on our local development machine, in our static website directory and push it to GitHub. Now it's time to switch focus to creating workflows.
 
+{{< note >}}
+An option to trigger a build is available on this Wercker page. Do not trigger a build at this time since the wercker.yml file needs to be created.
+{{< /note >}}
+
 <p align="center">
   <img src="/images/wercker/nicely_done.jpg" alt="Nicely done" /> 
 </p>
