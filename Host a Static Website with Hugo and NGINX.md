@@ -294,9 +294,28 @@ mysite
 
 ```
 
-### Travis-CI
+### Build and Deploy with Wercker 
 
-/// *** TBD ***
+A much better alternative to using manually syncing files between your local development machine and the Linode production server, is to use a continuous integration, build and automation tool. One such tool is [Wercker](http://www.wercker.com/).
+
+### Creating a GitHub Account
+
+#### Creating a Wercker Account
+
+
+<p align="center">
+  <img src="/images/wercker/login.jpg" alt="Wercker" /> 
+</p>
+
+
+You will be greeted with a Welcome page.
+
+<p align="center">
+  <img src="/images/wercker/welcome.jpg" alt="Welcome" /> 
+</p>
+
+
+
 
 
 ## Installing Nginx
