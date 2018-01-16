@@ -20,6 +20,9 @@ external_resources:
   - '[Setting appendPort and baseUrl](https://github.com/gohugoio/hugo/issues/852)'
   - '[Hugo styling not working](https://discourse.gohugo.io/t/hugo-static-styling-not-working-whereas-hugo-server-works/2916)'
   - '[Reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy)'
+  - '[How to Develop and Deploy Your Applications Using Wercker](https://linode.com/docs/development/ci/how-to-develop-and-deploy-your-applications-using-wercker/)'
+  - '[Deployment with Wercker](http://gohugo.io/hosting-and-deployment/deployment-with-wercker)'
+  - '[Creating a Workflow](http://devcenter.wercker.com/docs/creating-a-workflow)'
 ---
 
 Hugo is promoted as "...one of the most popular open-source static site generators." In this article we will discuss installing 
