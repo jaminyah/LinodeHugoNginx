@@ -54,6 +54,8 @@ Begin by completing the following guides if you are getting started with Linode 
 
 2.  This guide will use `sudo` wherever possible. Complete the sections of our [Securing Your Server](/docs/security/securing-your-server) to create a standard user account, harden SSH access and remove unnecessary network services.
 
+3.  A software version control platform is needed to manage the source code of your static website. In this guide [GitHub](https://github.com/) is discussed. Other version control platforms such as [Bitbucket](https://bitbucket.org/) or [GitLab](https://gitlab.com/) can be used. However, those platforms are not discussed in this guide. Sign up for a GitHub account if you don't have one.
+
 
 ### Ubuntu Installation Update
 
@@ -299,24 +301,57 @@ mysite
 
 ### Build and Deploy with Wercker 
 
-A much better alternative to using manually syncing files between your local development machine and the Linode production server, is to use a continuous integration, build and automation tool. One such tool is [Wercker](http://www.wercker.com/).
+A much better alternative to using manually syncing files between your local development machine and the Linode production server is to use a continuous integration, build and automation tool. One such tool is [Wercker](http://www.wercker.com/). At present Wercker will build and deploy static site contents from GitHub, BitBucket and GitLab. Let's use GitHub. 
 
-### Creating a GitHub Account
 
-#### Creating a Wercker Account
+#### Creating a Wercker App
 
+Begin by signing up for an account on the Wercker site using the "Get Started for free" option. Signing up using GitHub is the simplest option. 
 
 <p align="center">
   <img src="/images/wercker/login.jpg" alt="Wercker" /> 
 </p>
 
 
-You will be greeted with a Welcome page.
+You will be greeted with a Welcome page, from which the first application can be created. 
 
 <p align="center">
   <img src="/images/wercker/welcome.jpg" alt="Welcome" /> 
 </p>
 
+
+Create the application.
+
+<p align="center">
+  <img src="/images/wercker/create_new_app.jpg" alt="Create New Application" /> 
+</p>
+
+
+From the list presented, select the GitHub repository that has the contents of your static site.
+
+<p align="center">
+  <img src="/images/wercker/select_repo.jpg" alt="Select GitHub Repo" /> 
+</p>
+
+Review the status of the application.
+
+<p align="center">
+  <img src="/images/wercker/review.jpg" alt="Review Application" /> 
+</p>
+
+
+After creating the application, several options, to select a programming language, are presented. Explore a few language options to see the wercker.yml template that is created for each. Later in the article, we will create a wercker.yml file on our local development machine in our static website directory and push it to GitHub.
+
+Now it time switch focus to creating workflows.
+
+<p align="center">
+  <img src="/images/wercker/nicely_done.jpg" alt="Nicely done" /> 
+</p>
+
+
+#### Creating Work Flows
+
+// ** TBD **
 
 
 
