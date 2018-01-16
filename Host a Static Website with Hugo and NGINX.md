@@ -415,26 +415,27 @@ Search for "hugo" and select arjen/hugo-build for the list.
 
 #### Running the Wercker App
 
+If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern is, there is only one wercker file, so there should only be one pipeline in the workflow. This generates an error an Run time.
 
 <p align="center">
   <img src="/images/wercker/deploy_error.jpg" alt="Workflow error" /> 
 </p>
 
-
+Incorrect scripts in the wercker.yml file will result in a failure in the deploy pipeline when the build run.
 
 <p align="center">
   <img src="/images/wercker/linode_update_failed.jpg" alt="Linode update error" /> 
 </p>
 
 
-
+Using the incorrect user in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker run terminal. The username should be the same username used to ssh in the Linode server and add the linode_PUBLIC key to the .ssh/authorized file.
 
 <p align="center">
   <img src="/images/wercker/publickey_error.jpg" alt="Public key error" /> 
 </p>
 
 
-
+Successful run of the deployment pipeline.
 
 <p align="center">
   <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
