@@ -366,13 +366,7 @@ An option to trigger a build is available on this Wercker page. Do not trigger a
 
 #### Creating Workflows
 
-Begin by selecting the Wercker Workflows tab.
-
-<p align="center">
-  <img src="/images/wercker/add_deploy_pipeline.jpg" alt="Add deploy pipeline" /> 
-</p>
-
-Let's take a look at the structure of the default wercker.yml file that will be added to the files in our static site directory. There are two pipelines shown, build and deploy.
+Begin by selecting the Wercker Workflows tab. Let's examine the structure of the default wercker.yml file that will be added to the files in our static site directory. There are two pipelines shown, build and deploy.
 
 ```bash
 box: debian
@@ -384,13 +378,19 @@ deploy:
  
 ```
 
-Wercker application, therefore, has to have two pipelines. Build and deploy. By default a build pipeline should be created in the workflow shown. Let's add and new pipeline to the workflow. Start by selecting "Add a new pipeline" button. In the name field enter `deploy-production`. For YML Pipeline name enter `deploy`. Use the default Hook type.
+Wercker application, therefore, has to have these two pipelines in its workflow. By default, a build pipeline should already be created in the workflow. Let's add the deploy pipeline to the workflow. Start by selecting the "Add a new pipeline" button. In the name field enter `deploy-production`. For `YML Pipeline name` enter `deploy`. Leave the Hook type in the default setting.
 
   * __Name__: deploy-production
   * __YML Pipeline name__: deploy
-  * __Hook type__: Use the default
+  * __Hook type__: Use default setting
 
-There should now be two piplines in list of pipelines; `build` and `deploy-production`. Next task, add the new pipeline, `deploy-production` to the workflow. Select the `+` button associated with to the build pipeline in the existing workflow. In the Execute pipeline drop-down list, select deploy-production. Then add this pipeline. The workflow now has a build and deploy pipeline that corresponds with the build and deploy pipelines in the wercker.yml file that will be created.
+There should now be two piplines in list of pipelines; `build` and `deploy-production`. Next task, add the new pipeline, `deploy-production` to the workflow. Select the `+` button associated with to the build pipeline in the existing workflow. In the Execute pipeline drop-down list, select deploy-production. Then add this pipeline. 
+
+<p align="center">
+  <img src="/images/wercker/add_deploy_pipeline.jpg" alt="Add deploy pipeline" /> 
+</p>
+
+The workflow now has build and deploy pipelines that correspond with the build and deploy pipelines in the wercker.yml file that will be created.
 
 <p align="center">
   <img src="/images/wercker/pipeline_success.jpg" alt="Successful pipeline" /> 
