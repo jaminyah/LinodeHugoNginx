@@ -428,18 +428,105 @@ Incorrect scripts in the wercker.yml file will result in a failure in the deploy
 </p>
 
 
-Using the incorrect user in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker run terminal. The username should be the same username used to ssh in the Linode server and add the linode_PUBLIC key to the .ssh/authorized file.
+It may be tempting to look at the Wercker console output and guess the username in the script section of the wercker.yml file should be "wercker" as in `export WERCKER_STEP_OWNER` as shown in the code snippet below. However, this is not correct. Using the incorrect user in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker run terminal. 
+
+
+```bash
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
+
+    - add-to-known_hosts:
+        hostname: 12.34.56.789
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh wercker@linode_IP_Address git -C ~/hugo.io/my_hugo_blog/ pull
+```
+
+
+{{< note >}}
+The username should be the same username used to ssh into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
+{{< /note >}}
 
 <p align="center">
   <img src="/images/wercker/publickey_error.jpg" alt="Public key error" /> 
 </p>
 
 
-Successful run of the deployment pipeline.
+Now that we are using the correct linode_username, a commit to GitHub will trigger Wercker to create another build and deploy sequence.
+
+```bash
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
+
+    - add-to-known_hosts:
+        hostname: 12.34.56.789
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh linode_username@linode_IP_Address git -C ~/hugo.io/my_hugo_blog/ pull
+```
+
+Yet, there is still another error.
+
+<p align="center">
+  <img src="/images/wercker/script_path_error.jpg" alt="Home directory error" /> 
+</p>
+
+
+#### Successful deployment
+
+Let's fix all issues with our wercker.yml file and push the file to GitHub. 
+
+```bash
+box: debian
+build:
+  steps:
+    - arjen/hugo-build@1.25.2: 
+        version: "0.32.3"
+        theme: material-design
+        flags: --buildDrafts=true
+        disable_pygments: true
+        clean_before: true
+        prod_branches: master
+
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
+
+    - add-to-known_hosts:
+        hostname: linode_IP_Address
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh linode_username@linode_IP_Address git -C /home/linode_username/sites/Static_Site_Name/ pull
+```
+
+Wercker will now trigger a the build and deploy sequence. Though the wercker.yml file is now correct, Wercker generates one more error. There is one last thing to do. Log into your Linode server and clone the GitHub directory containing our static site.
 
 <p align="center">
   <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
-</p>
+</p>i
 
 
 
