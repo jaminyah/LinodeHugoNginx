@@ -46,8 +46,8 @@ Throughout this guide commands will be given with example variables to provide g
 | YOUR-TEMPLATE-NAME       | Replace with the Hugo theme that you downloaded       |
 | YOUR-DOMAIN-NAME         | Replace with the domain name for your website         |
 | username                 | Replace with your Linode login user name              |
-| `linode_IP_Address`      | Replace with IP address of your Linode server         |
-| site_name                | Replace with the name of your Hugo static website     |
+| `linode-IP-Address`      | Replace with IP address of your Linode server         |
+| site-name                | Replace with the name of your Hugo static website     |
 | github-usename           | Replace with your GitHub user name                    |
 | my-static-site-name      | Replace with the name of your static website          |
 
@@ -143,7 +143,7 @@ Your IP address can be found by selecting the Linodes tab. Replace `example.com`
 
 Open a Terminal window and log in to your Linode server at the command line with SSH. A typical log in command should look as follows:
 
-    ssh username@IPAddress
+    ssh username@linode-IP-Address
 
 {{< note >}}
 Enter the `username` that you use to log into your Linode server. This user must have `sudo` privileges.
@@ -155,13 +155,7 @@ Further clarification on logging in with SSH can be found in the [Getting starte
 
 ## Installing Hugo
 
-Create a directory named `hugo` and change into this directory.
-
-    cd ~
-    mkdir hugo
-    cd hugo
-
-Use the `wget` command to get the latest Hugo release files. Latest releases are located at [Hugo releases](https://github.com/gohugoio/hugo/releases).
+Use the `wget` command to get the latest Hugo release files. Latest releases are located at [Hugo releases](https://github.com/gohugoio/hugo/releases). An example command is shown:
 
     wget https://github.com/gohugoio/hugo/releases/download/v0.31.1/hugo_0.31.1_Linux-64bit.deb
 
@@ -204,38 +198,24 @@ Available Commands:
   config      Print the site configuration
   convert     Convert your content to different formats
   env         Print Hugo version and environment info
-  gen         A collection of several useful generators.
-  help        Help about any command
-  import      Import your site from others.
-  list        Listing out various types of content
-  new         Create new content for your site
-  server      A high performance webserver
-  undraft     Undraft resets the content's draft status
   version     Print the version number of Hugo
 
 Flags:
   -b, --baseURL string             hostname (and path) to the root, e.g. http://spf13.com/
   -D, --buildDrafts                include content marked as draft
-  -E, --buildExpired               include expired content
-  -F, --buildFuture                include content with publishdate in the future
-      --cacheDir string            filesystem path to cache directory. Defaults: $TMPDIR/hugo_cache/
-      --canonifyURLs               if true, all relative URLs will be canonicalized using baseURL
-      --cleanDestinationDir        remove files from destination not found in static directories
-      --config string              config file (default is path/config.yaml|json|toml)
-  -c, --contentDir string          filesystem path to content directory
-      --debug                      debug output
+
 ```
 
 
 ## Creating a Blog Article
 
-If you are getting started with creating blog articles with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of a static website is performed on your local machine. 
+If you are getting started with creating blog articles with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of the static website is performed on your local development machine. 
 
 <p align="center">
   <img src="/images/sw_dev_sequence.jpg" alt="Software development sequence" /> 
 </p>
 
-Once code review and system testing are complete, it is then time to check the code into a version control system such as GitHub. Build and deploy phases are performed next followed by release to production.
+Once code review and system testing are complete, it is then time to check the code into a version control system, such as GitHub. Build and deploy phases are performed next followed by release to production.
 
 
 ## Building and Updating a Static Site
@@ -246,11 +226,11 @@ Generally, developers focus on writing code, unit testing and incorporating code
   <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
 </p>
 
-There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), Wercker and [Rsync](https://rsync.samba.org) are among the more popular tools, used to build and deploy to a production server such as Linode. Let's first discuss using `Rsync`.
+There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), Wercker and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's first discuss using `Rsync`.
 
 ### Rsync
 
-You may decide that yours is a small operation and so you prefer to develop, test and perform version control all on your local development machine. Then you wish to transfer the files of your static site directly to the Linode production server without a remote version control service or an automated build and deploy tool. If this is the case, Rsync is a good tool for the job.
+You may decide that yours is a small operation and so you prefer to develop, test and perform version control all on your local development machine. Then you wish to transfer the files of your static site directly to the Linode production server without a remote version control service or an automated build and deploy tool. If this is the case, Rsync is a good tool for manually syncing your files with a remote server.
 
 <p align="center">
   <img src="/images/sw_dev_rsync.jpg" alt="Deploy with Rsync" /> 
@@ -267,14 +247,15 @@ Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a 
       |_____js\script.js
 ```
 
-Once all bugs are fixed, the website works as expected, and all files are checked into version control, then it's time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server home directory with the command `rsync -zP public username@linode_IP_Address:~/`.
+Once all bugs are fixed, the website works as expected, and all files are checked into version control, then it's time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server home directory with the command `rsync -zP public username@linode-IP-Address:~/`.
 
-                            `rsync -zP public linode_username@linode_IP_Address:~/`
-                                    ||   |                         |            | 
-                          compress _||   |                         |            |__ Linode home directory
+```bash
+                             rsync -zP public username@linode-IP-Address:~/
+                                    ||   |                         |      | 
+                          compress _||   |                         |      |__ Linode home directory
                     show progress ___|   |                         |__ Linode server IP address
                 static site directory ___|
-
+```
 
 Here is a sample Terminal console output.
 
@@ -282,8 +263,8 @@ Here is a sample Terminal console output.
 machine-name:~ username$ ls
 public
 
-machine-name:~ username$ rsync -zP public username@linode_IP_Address:~/
-username@linode_IP_Address password: 
+machine-name:~ username$ rsync -zP public username@linode-IP-Address:~/
+username@linode-IP-Address password: 
 building file list ... 
 12 files to consider
 public/
@@ -300,7 +281,7 @@ machine-name:~ username$
 
 ```
 
-Logging into your Linode server, with the SSH command at the Terminal console, and using the `ls` command should show the "public" directory. Included in this directory is the contents of the static site.
+Logging into your Linode server with the SSH command, at the Terminal console and using the `ls` command, should show the "public" directory. Included in this directory are the contents of the static site.
 
 ```bash
 username@localhost:~$ ls
@@ -317,7 +298,7 @@ mysite
 
 ### Build and Deploy with Wercker 
 
-A much better alternative to using manually syncing files between your local development machine and the Linode production server is to use a continuous integration, build automation tool. One such tool is [Wercker](http://www.wercker.com/). At present Wercker will build and deploy static site contents from GitHub, BitBucket and GitLab. Let's use GitHub. 
+A much better alternative to Rsync is a continuous integration, build automation tool. One such tool is [Wercker](http://www.wercker.com/). At present Wercker will build and deploy static site contents from GitHub, BitBucket and GitLab. Let's use GitHub. 
 
 
 #### Creating a Wercker App
@@ -356,7 +337,7 @@ Review the status of the Wercker application then create it.
 </p>
 
 
-After creating the application, several options, to select a programming language, are presented. Explore a few language options to see the wercker.yml template that is created for each. Later in this guide, we will create a wercker.yml file with the default option. The Wercker yaml file will be placed in the static website directory on your local development machine and then pushed to GitHub. Now it's time to switch focus to creating workflows.
+After creating the application, several options, to select a programming language, are presented. Explore a few language options to see the wercker.yml template that is created for each. Later in this guide, we will create a wercker.yml file with the default option. The Wercker yaml file will be placed in the static website directory on your local development machine then will be pushed to GitHub. Now it's time to switch focus to creating workflows.
 
 {{< note >}}
 An option to trigger a build is available on this Wercker page. Do not trigger a build at this time since the wercker.yml file needs to be created.
@@ -369,7 +350,7 @@ An option to trigger a build is available on this Wercker page. Do not trigger a
 
 #### Creating Workflows
 
-Begin by selecting the Wercker Workflows tab. Let's examine the structure of the default wercker.yml file that will be added to the files in our static site directory. There are two pipelines shown, build and deploy.
+Begin by selecting the Wercker Workflows tab. Let's examine the structure of the default wercker.yml file that will be added to your static site directory. Note that there are two pipelines shown, build and deploy.
 
 ```bash
 box: debian
@@ -387,7 +368,7 @@ Wercker application, therefore, has to have these two pipelines in its workflow.
   * __YML Pipeline name__: deploy
   * __Hook type__: Use default setting
 
-There should now be two piplines in list of pipelines; `build` and `deploy-production`. Next task, add the new pipeline, `deploy-production` to the workflow. Select the `+` button associated with to the build pipeline in the existing workflow. In the Execute pipeline drop-down list, select deploy-production. Then add this pipeline. 
+There should now be two piplines in list of pipelines; build and deploy-production. Next task is to add the new pipeline, `deploy-production` to the workflow. Select the `+` button associated with to the build pipeline in the existing workflow. In the Execute pipeline drop-down list, select deploy-production. Then add this pipeline. 
 
 <p align="center">
   <img src="/images/wercker/add_deploy_pipeline.jpg" alt="Add deploy pipeline" /> 
@@ -399,12 +380,10 @@ The workflow now has build and deploy pipelines that correspond with the build a
   <img src="/images/wercker/pipeline_success.jpg" alt="Successful pipeline" /> 
 </p>
 
-Further information on creating workflows can be found in the [Creating a Workflow](http://devcenter.wercker.com/docs/creating-a-workflow) Wercker document.
-
 
 #### Creating SSH Keys
 
-Wercker will need to access our Linode server. To accomplish this task, the Wercker app will be used to generate a Public and Private Key pair. Select the Environment tab, then select the `Generate SSH Keys` option. For SSH key name, enter linode and for RSA select 4096 bit. Select `Generate` button.
+Wercker will need to access your Linode server. To accomplish this task, the Wercker app will be used to generate a Public and Private Key pair. Select the Environment tab, then select the `Generate SSH Keys` option. For SSH key name, enter linode and for RSA select 4096 bit. Select `Generate` button.
 
   * __SSH key name__: linode
   * __RSA__: 4096 bit
@@ -424,16 +403,17 @@ Successful generation of the key-pair should show the public key, `linode_PUBLIC
 
 Log into your Linode server with the Terminal console using the `ssh` command and enter your password.
 
-` ssh username@linode_IP_Address`
+` ssh username@linode-IP-Address`
 
 {{< note >}}
 username should have sudo privileges but for security purposes the username should not be `root`.
 {{< /note >}}
 
-Wercker app public key now needs to be added to the authorized_keys file in your Linode home directory. Now, we need to check if there is already a `.ssh` directory by entering the command `ls -al`. There are two cases to consider:
+Wercker app public key now needs to be added to the authorized_keys file in your Linode home directory. Let's check if there is already a `.ssh` directory by entering the command `ls -al`. There are three cases to consider:
 
 1. There is a .ssh directory with no authorized_keys file
 2. There is no .ssh directory
+3. There is a .ssh directory with an authorized_keys file
 
 | Command Name             | Action performed                                       |
 |--------------------------|--------------------------------------------------------|
@@ -442,13 +422,19 @@ Wercker app public key now needs to be added to the authorized_keys file in your
 | `ls`                     | List all files in the current directory                |
 
 
-Let's first address case 1. If there is a .ssh directory, change into it with the `cd .ssh` command. List the files with the command `ls` to check if there is an authorized keys file. Continue with the steps in "Add Authorized Keys File" section.
+  * case 1: If there is a .ssh directory, change into it with the `cd .ssh` command. List the files with the command `ls` to check if there is an authorized keys file. If there is no authorized keys file, continue with the steps in "Add Authorized Keys File" subsection.
 
-In case 2, and .ssh directory needs to be added. Add this directory with the command `mkdir .ssh`. Change into this directory with command `cd .ssh`. Add an authorized_keys file by following the steps below.
+  * case 2: A .ssh directory needs to be added. Add this directory with the command `mkdir .ssh`. Change into this directory with command `cd .ssh`. Continue with the steps in "Add Authorized Keys File" subsection.
+
+  * case 3: Since there is already a .ssh directory and a authorized keys file, continue with the steps in "Copy the Public Key to the authorized_keys" subsection.
 
 ##### Add Authorized Keys File
 
-If there isn't one, create a blank file with the command, `vim authorized_keys`. Press the `i` key on your keyboard to enter "Insert" mode. Copy the `linode_PUBLIC` key from the Wercker app and paste it into the authorized key file. On your keyboard, press **Escape** button to exit vim Insert mode. Save and exit the file entering `:wq`. Complete the command with the **Return** key. 
+If there isn't one, create a blank file with the command, `vim authorized_keys`. Press the `i` key on your keyboard to enter "Insert" mode. Continue with the steps in "Copy the Public Key to authorized_keys" subsection.
+
+##### Copy the Public Key to authorized_keys
+
+Copy the `linode_PUBLIC` key from the Wercker app and paste it into the authorized key file. On your keyboard, press **Escape** button to exit vim Insert mode. Save and exit the file by typing `:wq`. Complete the command with the **Return** key. 
 
 {{< note >}}
 The username, used to log into Linode and add the SSH public key, will be used in the scripts section of the wercker.yml file.
@@ -477,7 +463,7 @@ deploy:
         packages: openssh-client openssh-server
 
     - add-to-known_hosts:
-        hostname: linode_IP_Address
+        hostname: linode-IP-Address
         local: true
 
     - add-ssh-key:
@@ -486,10 +472,10 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh username@linode_IP_Address git -C /home/username/sites/site_name/ pull
+          ssh username@linode-IP-Address git -C /home/username/sites/site-name/ pull
 ```
 
-Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build) and is available in the Wercker Registery. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registery page and select arjen / hugo-build. A description of additional Hugo build configurations are provided.
+Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build) that is available in the Wercker Registry. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registry page and select arjen / hugo-build. A description of additional Hugo build configurations are provided.
 
 <p align="center">
   <img src="/images/wercker/arjen.jpg" alt="Arjen App" /> 
@@ -497,10 +483,10 @@ Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.
 
 There are a few important items to note in the wercker.yml deploy pipeline.
 
-* _hostname_: Enter the IP address of your Linode server.
-* _keyname_: linode is the name of the public/private key pair created earlier with the Wercker App. 
-* _script_:_name_: Is a name we give to the script 
-* _script_:_code_: username is your linode username that's used to login with SSH at the command line. Shortly, we will create a sites directory in our Linode home directory, and clone the static site GitHub repo into this sites directory.
+* __hostname__: Enter the IP address of your Linode server.
+* __keyname__: linode is the name of the public/private key pair created earlier with the Wercker App. 
+* __script_:_name__: Is a name we give to the script 
+* __script_:_code__: username is your linode username that's used to login with SSH at the command line. Shortly, we will create a sites directory in our Linode home directory, and clone the static site GitHub repo into this sites directory.
 
 {{< note >}}
 Pushing the wercker.yml file to GitHub at this time will trigger the workflow in Wercker, which will result in an error.
@@ -513,7 +499,7 @@ Pushing the wercker.yml file to GitHub at this time will trigger the workflow in
 There is one last thing to do. Log into your Linode server with the SSH command. In your home directory create a directory called sites. Change into this sites directory and clone the GitHub directory containing your static site.
 
 ```bash
-ssh username@linode_IP_Address
+ssh username@linode-IP-Address
 mkdir sites
 git init
 git clone https://github.com/git-username/my-static-site-name.git
@@ -523,7 +509,7 @@ git clone https://github.com/git-username/my-static-site-name.git
 
 #### Successful Wercker Build and Deployment
 
-From your local development machine, push the wercker file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. If there are no issues, the workflow will execute successfully.
+From your local development machine, push the wercker.yml file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. If there are no issues, the workflow will execute successfully.
 
 <p align="center">
   <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
@@ -532,7 +518,7 @@ From your local development machine, push the wercker file to your GitHub static
 
 #### Tips and Tricks with Wercker
 
-1. If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern is, there is only one wercker file, so there should only be one pipeline in the workflow. This generates an error an Run time.
+1. If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern here is; there is only one wercker.yml file, so there should only be one pipeline in the workflow. This generates an error during the Wercker run phase.
 
 <p align="center">
   <img src="/images/wercker/deploy_error.jpg" alt="Workflow error" /> 
@@ -545,7 +531,7 @@ From your local development machine, push the wercker file to your GitHub static
 </p>
 
 
-3. It may be tempting to look at the Wercker console error output and guess that the username in the wercker.yml script should be "wercker" as in `export WERCKER_STEP_OWNER`. An incorrect username in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker console output. 
+3. It may be tempting to look at the Wercker console error output and guess that the username in the wercker.yml script should be "wercker" as in `export WERCKER_STEP_OWNER="wercker"`. An incorrect username in the script can lead to a "public key error" output in the Wercker console output. 
 
 ```bash
 deploy:
@@ -563,11 +549,11 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh wercker@linode_IP_Address git -C /home/username/sites/site_name/ pull
+          ssh wercker@linode-IP-Address git -C /home/username/sites/site-name/ pull
 ```
 
 {{< note >}}
-The username should be the same username used to ssh into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
+The username should be the same username used to SSH into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
 {{< /note >}}
 
 <p align="center">
@@ -575,7 +561,7 @@ The username should be the same username used to ssh into the Linode server and 
 </p>
 
 
-4. Using a home directory shortcut `~/sites/site_name/` can result in a path error in the Wercker console output.
+4. Using a home directory shortcut `~/sites/site-name/` can result in a "Permission denied" error in the Wercker console output.
 
 ```bash
 deploy:
@@ -593,7 +579,7 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh username@linode_IP_Address git -C ~/sites/site_name/ pull
+          ssh username@linode-IP-Address git -C ~/sites/site-name/ pull
 ```
 
 <p align="center">
