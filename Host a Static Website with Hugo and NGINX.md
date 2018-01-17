@@ -243,11 +243,17 @@ Generally, developers focus on writing code, unit testing and incorporating code
   <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
 </p>
 
-There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's first discuss using `Rsync`.
+There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), Wercker and [Rsync](https://rsync.samba.org) are among the more popular tools, used to build and deploy to a production server such as Linode. Let's first discuss using `Rsync`.
 
 ### Rsync
 
-Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a tool for "transferring and synchronizing files across computer systems." Consider a static website, mysite, on our local development machine. It is the home directory with the following folder structure:
+You may decide that yours is a small operation and so you prefer to develop, test and perform version control all on your local development machine. Then you wish to transfer the files of your static site directly to the Linode production server without a remote version control service or an automated build and deploy tool. If this is the case, Rsync is a good tool for the job.
+
+<p align="center">
+  <img src="/images/sw_dev_rsync.jpg" alt="Deploy with Rsync" /> 
+</p>
+
+Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a tool for "transferring and synchronizing files across computer systems." Consider a static website, mysite, on our local development machine. It is in the home directory with the following folder structure:
 
 ```bash
 |__public
@@ -258,11 +264,11 @@ Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a 
       |_____js\script.js
 ```
 
-Once all bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server with the command `rsync -zP public username@12.34.56.789:~/`.
+Once all bugs are fixed, the website works as expected, and all files are checked into version control, then it's time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server home directory with the command `rsync -zP public username@linode_IP_Address:~/`.
 
-                            `rsync -zP public linode_username@12.34.56.789:~/`
-                                    ||   |                         |        | 
-                          compress _||   |                         |        |__ Linode home directory
+                            `rsync -zP public linode_username@linode_IP_Address:~/`
+                                    ||   |                         |            | 
+                          compress _||   |                         |            |__ Linode home directory
                     show progress ___|   |                         |__ Linode server IP address
                 static site directory ___|
 
@@ -273,8 +279,8 @@ Here is a sample Terminal console output.
 machine-name:~ username$ ls
 public
 
-machine-name:~ username$ rsync -zP public username@12.34.56.789:~/
-username@12.34.56.789's password: 
+machine-name:~ username$ rsync -zP public username@linode_IP_Address:~/
+username@linode_IP_Address password: 
 building file list ... 
 12 files to consider
 public/
