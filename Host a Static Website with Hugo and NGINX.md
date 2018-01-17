@@ -46,6 +46,7 @@ Throughout this guide commands will be given with example variables to provide g
 | YOUR-TEMPLATE-NAME       | Replace with the Hugo theme that you downloaded       |
 | YOUR-DOMAIN-NAME         | Replace with the domain name for your website         |
 | username                 | Replace with Linode login user name                   |
+| linode_IP_Address        | Replace with IP address of your Linode server         |
 
 
 Begin by completing the following guides if you are getting started with Linode for the first time.
@@ -225,18 +226,24 @@ Flags:
 
 ## Creating a Blog Article
 
-If you are getting started with creating blog articles with Hugo the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*.
+If you are getting started with creating blog articles with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of a static website is performed on your local machine. 
+
+<p align="center">
+  <img src="/images/sw_dev_sequence.jpg" alt="Software development sequence" /> 
+</p>
+
+Once code review and system testing are complete, it is then time to check the code into a version control system such as GitHub. Build and deploy phases are performed next followed by release to production.
 
 
 ## Building and Updating a Static Site
 
-Generally, developers focus on writting code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss building a static website and moving it from the development environment to the production server. Then, we will address issues related to keeping the site updated.
+Generally, developers focus on writing code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss moving the static site from the development environment to the production server.
 
 <p align="center">
   <img src="/images/ProductionCycle.jpg" alt="Production Cycle" /> 
 </p>
 
-There are several approaches to deploying an application, that has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's discuss using `Rsync` at the command line.
+There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's first discuss using `Rsync`.
 
 ### Rsync
 
@@ -253,7 +260,7 @@ Rsync is described in the [Wikipedia](https://en.wikipedia.org/wiki/Rsync) as a 
 
 Once all bugs are fixed, the website works as expected, and all files are in version control, then it is time to deploy the static website to the Linode production server. We can push the contents of the public directory to the production server with the command `rsync -zP public username@12.34.56.789:~/`.
 
-                            `rsync -zP public linode-username@12.34.56.789:~/`
+                            `rsync -zP public linode_username@12.34.56.789:~/`
                                     ||   |                         |        | 
                           compress _||   |                         |        |__ Linode home directory
                     show progress ___|   |                         |__ Linode server IP address
@@ -284,7 +291,7 @@ machine-name:~ username$
 
 ```
 
-Logging into the Linode server and using the `ls` command should show the "public" directory. Included in this directory is the contents of the static site.
+Logging into your Linode server, with the SSH command at the Terminal console, and using the `ls` command should show the "public" directory. Included in this directory is the contents of the static site.
 
 ```bash
 username@localhost:~$ ls
