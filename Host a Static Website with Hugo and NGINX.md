@@ -523,7 +523,7 @@ git clone https://github.com/git-username/my-static-site-name.git
 
 #### Successful Wercker Build and Deployment
 
-From your local development machine, push the wercker file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. 
+From your local development machine, push the wercker file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. If there are no issues, the workflow will execute successfully.
 
 <p align="center">
   <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
@@ -532,21 +532,20 @@ From your local development machine, push the wercker file to your GitHub static
 
 #### Tips and Tricks with Wercker
 
-If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern is, there is only one wercker file, so there should only be one pipeline in the workflow. This generates an error an Run time.
+1. If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern is, there is only one wercker file, so there should only be one pipeline in the workflow. This generates an error an Run time.
 
 <p align="center">
   <img src="/images/wercker/deploy_error.jpg" alt="Workflow error" /> 
 </p>
 
-Incorrect scripts in the wercker.yml file will result in a failure in the deploy pipeline when the build run.
+2. Incorrect scripts in the wercker.yml file will result in a failure in the deploy pipeline when the build run.
 
 <p align="center">
   <img src="/images/wercker/linode_update_failed.jpg" alt="Linode update error" /> 
 </p>
 
 
-It may be tempting to look at the Wercker console output and guess the username in the script section of the wercker.yml file should be "wercker" as in `export WERCKER_STEP_OWNER` as shown in the code snippet below. However, this is not correct. Using the incorrect user in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker run terminal. 
-
+3. It may be tempting to look at the Wercker console error output and guess that the username in the wercker.yml script should be "wercker" as in `export WERCKER_STEP_OWNER`. An incorrect username in the script section of the wercker.yml file can lead to a "public key error" output in the Wercker console output. 
 
 ```bash
 deploy:
@@ -564,9 +563,8 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh wercker@linode_IP_Address git -C ~/hugo.io/my_hugo_blog/ pull
+          ssh wercker@linode_IP_Address git -C /home/username/sites/site_name/ pull
 ```
-
 
 {{< note >}}
 The username should be the same username used to ssh into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
@@ -577,7 +575,7 @@ The username should be the same username used to ssh into the Linode server and 
 </p>
 
 
-Now that we are using the correct linode_username, a commit to GitHub will trigger Wercker to create another build and deploy sequence.
+4. Using a home directory shortcut `~/sites/site_name/` can result in a path error in the Wercker console output.
 
 ```bash
 deploy:
@@ -595,19 +593,12 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh linode_username@linode_IP_Address git -C ~/hugo.io/my_hugo_blog/ pull
+          ssh username@linode_IP_Address git -C ~/sites/site_name/ pull
 ```
-
-Yet, there is still another error.
 
 <p align="center">
   <img src="/images/wercker/script_path_error.jpg" alt="Home directory error" /> 
 </p>
-
-
-
-
-
 
 
 ## Installing Nginx
