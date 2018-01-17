@@ -45,8 +45,11 @@ Throughout this guide commands will be given with example variables to provide g
 | `http://example.com`     | Replace with your website address                     |
 | YOUR-TEMPLATE-NAME       | Replace with the Hugo theme that you downloaded       |
 | YOUR-DOMAIN-NAME         | Replace with the domain name for your website         |
-| username                 | Replace with Linode login user name                   |
-| linode_IP_Address        | Replace with IP address of your Linode server         |
+| username                 | Replace with your Linode login user name              |
+| `linode_IP_Address`      | Replace with IP address of your Linode server         |
+| site_name                | Replace with the name of your Hugo static website     |
+| github-usename           | Replace with your GitHub user name                    |
+| my-static-site-name      | Replace with the name of your static website          |
 
 
 Begin by completing the following guides if you are getting started with Linode for the first time.
@@ -438,7 +441,8 @@ Wercker app public key now needs to be added to the authorized_keys file in your
 | `ls -al`                 | Provide a long listing of files including hidden files |
 | `ls`                     | List all files in the current directory                |
 
-Let's first address case 1. If there is a .ssh directory, change into it with the `cd .ssh` command. List the files with the command `ls` to check if there is an authorized keys file. Follow the steps in "Add Authorized Keys File" section.
+
+Let's first address case 1. If there is a .ssh directory, change into it with the `cd .ssh` command. List the files with the command `ls` to check if there is an authorized keys file. Continue with the steps in "Add Authorized Keys File" section.
 
 In case 2, and .ssh directory needs to be added. Add this directory with the command `mkdir .ssh`. Change into this directory with command `cd .ssh`. Add an authorized_keys file by following the steps below.
 
@@ -453,21 +457,80 @@ The username, used to log into Linode and add the SSH public key, will be used i
 
 #### Creating wercker.yml
 
-One page on the Wercker site that thens to be a bit challenging to find is the App Registry. The path is list here for ease of reference: ` https://app.wercker.com/explore`. Navigate to the Registry.
+Create a file wercker.yml on your local machine in the directory containing your static website. One option is to create the file at the command line with the command `touch wercker.yml`. Add the following contents to the file.
 
-<p align="center">
-  <img src="/images/wercker/registry.jpg" alt="App Registry" /> 
-</p>
+```bash
+box: debian
+build:
+  steps:
+    - arjen/hugo-build@1.25.2: 
+        version: "0.32.3"
+        theme: material-design
+        flags: --buildDrafts=true
+        disable_pygments: true
+        clean_before: true
+        prod_branches: master
 
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
 
-Search for "hugo" and select arjen/hugo-build for the list. 
+    - add-to-known_hosts:
+        hostname: linode_IP_Address
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh username@linode_IP_Address git -C /home/username/sites/site_name/ pull
+```
+
+Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build) and is available in the Wercker Registery. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registery page and select arjen / hugo-build. A description of additional Hugo build configurations are provided.
 
 <p align="center">
   <img src="/images/wercker/arjen.jpg" alt="Arjen App" /> 
 </p>
 
+There are a few important items to note in the wercker.yml deploy pipeline.
 
-#### Running the Wercker App
+* _hostname_: Enter the IP address of your Linode server.
+* _keyname_: linode is the name of the public/private key pair created earlier with the Wercker App. 
+* _script_:_name_: Is a name we give to the script 
+* _script_:_code_: username is your linode username that's used to login with SSH at the command line. Shortly, we will create a sites directory in our Linode home directory, and clone the static site GitHub repo into this sites directory.
+
+{{< note >}}
+Pushing the wercker.yml file to GitHub at this time will trigger the workflow in Wercker, which will result in an error.
+{{ /note }}
+
+<p align="center">
+  <img src="/images/wercker/build_error.jpg" alt="Build error" /> 
+</p>
+
+There is one last thing to do. Log into your Linode server with the SSH command. In your home directory create a directory called sites. Change into this sites directory and clone the GitHub directory containing your static site.
+
+```bash
+ssh username@linode_IP_Address
+mkdir sites
+git init
+git clone https://github.com/git-username/my-static-site-name.git
+
+```
+
+
+#### Successful Wercker Build and Deployment
+
+From your local development machine, push the wercker file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. 
+
+<p align="center">
+  <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
+</p>
+
+
+#### Tips and Tricks with Wercker
 
 If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline that does not match the build, deploy structure of the wercker.yml file. The thought pattern is, there is only one wercker file, so there should only be one pipeline in the workflow. This generates an error an Run time.
 
@@ -542,45 +605,7 @@ Yet, there is still another error.
 </p>
 
 
-#### Successful deployment
 
-Let's fix all issues with our wercker.yml file and push the file to GitHub. 
-
-```bash
-box: debian
-build:
-  steps:
-    - arjen/hugo-build@1.25.2: 
-        version: "0.32.3"
-        theme: material-design
-        flags: --buildDrafts=true
-        disable_pygments: true
-        clean_before: true
-        prod_branches: master
-
-deploy:
-  steps:
-    - install-packages:
-        packages: openssh-client openssh-server
-
-    - add-to-known_hosts:
-        hostname: linode_IP_Address
-        local: true
-
-    - add-ssh-key:
-        keyname: linode
- 
-    - script:
-        name: Static site update on remote Linode
-        code: |
-          ssh linode_username@linode_IP_Address git -C /home/linode_username/sites/Static_Site_Name/ pull
-```
-
-Wercker will now trigger a the build and deploy sequence. Though the wercker.yml file is now correct, Wercker generates one more error. There is one last thing to do. Log into your Linode server and clone the GitHub directory containing our static site.
-
-<p align="center">
-  <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
-</p>i
 
 
 
