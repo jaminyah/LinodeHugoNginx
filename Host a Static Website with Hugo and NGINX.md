@@ -396,6 +396,8 @@ The workflow now has build and deploy pipelines that correspond with the build a
   <img src="/images/wercker/pipeline_success.jpg" alt="Successful pipeline" /> 
 </p>
 
+Further information on creating workflows can be found in the [Creating a Workflow](http://devcenter.wercker.com/docs/creating-a-workflow) Wercker document.
+
 
 #### Creating SSH Keys
 
@@ -417,15 +419,36 @@ Successful generation of the key-pair should show the public key, `linode_PUBLIC
 
 #### Add Public Key to Linode User Account
 
-Log into your Linode server at the Terminal console with the `ssh` command.
+Log into your Linode server with the Terminal console using the `ssh` command and enter your password.
 
-` ssh username@Your Linode IP address`
+` ssh username@linode_IP_Address`
 
 {{< note >}}
-For security purposes, your username should have sudo privileges but the username should not be root.
+username should have sudo privileges but for security purposes the username should not be `root`.
 {{< /note >}}
 
-During the creation of the wercker.yml file the username, used to log into Linode, will be used in the scripts section of the file.
+Wercker app public key now needs to be added to the authorized_keys file in your Linode home directory. Now, we need to check if there is already a `.ssh` directory by entering the command `ls -al`. There are two cases to consider:
+
+1. There is a .ssh directory with no authorized_keys file
+2. There is no .ssh directory
+
+| Command Name             | Action performed                                       |
+|--------------------------|--------------------------------------------------------|
+| `cd .ssh`                | Change into the .ssh directory                         |
+| `ls -al`                 | Provide a long listing of files including hidden files |
+| `ls`                     | List all files in the current directory                |
+
+Let's first address case 1. If there is a .ssh directory, change into it with the `cd .ssh` command. List the files with the command `ls` to check if there is an authorized keys file. Follow the steps in "Add Authorized Keys File" section.
+
+In case 2, and .ssh directory needs to be added. Add this directory with the command `mkdir .ssh`. Change into this directory with command `cd .ssh`. Add an authorized_keys file by following the steps below.
+
+##### Add Authorized Keys File
+
+If there isn't one, create a blank file with the command, `vim authorized_keys`. Press the `i` key on your keyboard to enter "Insert" mode. Copy the `linode_PUBLIC` key from the Wercker app and paste it into the authorized key file. On your keyboard, press **Escape** button to exit vim Insert mode. Save and exit the file entering `:wq`. Complete the command with the **Return** key. 
+
+{{< note >}}
+The username, used to log into Linode and add the SSH public key, will be used in the scripts section of the wercker.yml file.
+{{< /note >}}
 
 
 #### Creating wercker.yml
