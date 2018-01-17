@@ -397,7 +397,7 @@ There should now be two piplines in list of pipelines; `build` and `deploy-produ
 </p>
 
 
-#### Creating SSH keys
+#### Creating SSH Keys
 
 Wercker will need to access our Linode server. To accomplish this task, the Wercker app will be used to generate a Public and Private Key pair. Select the Environment tab, then select the `Generate SSH Keys` option. For SSH key name, enter linode and for RSA select 4096 bit. Select `Generate` button.
 
