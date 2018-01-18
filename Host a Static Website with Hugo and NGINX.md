@@ -23,6 +23,7 @@ external_resources:
   - '[How to Develop and Deploy Your Applications Using Wercker](https://linode.com/docs/development/ci/how-to-develop-and-deploy-your-applications-using-wercker/)'
   - '[Deployment with Wercker](http://gohugo.io/hosting-and-deployment/deployment-with-wercker)'
   - '[Creating a Workflow](http://devcenter.wercker.com/docs/creating-a-workflow)'
+  - '[Deployment with Rsync](https://gohugo.io/hosting-and-deployment/deployment-with-rsync/)'
 ---
 
 Hugo is promoted as "...one of the most popular open-source static site generators." In this article we will discuss installing 
@@ -43,13 +44,12 @@ Throughout this guide commands will be given with example variables to provide g
 |--------------------------|-------------------------------------------------------|
 | `http://blog.example.com`| Replace with the subdomain for your website address   |
 | `http://example.com`     | Replace with your website address                     |
-| YOUR-TEMPLATE-NAME       | Replace with the Hugo theme that you downloaded       |
-| YOUR-DOMAIN-NAME         | Replace with the domain name for your website         |
+| your-template-name       | Replace with the Hugo theme that you downloaded       |
+| your-domain-name         | Replace with the domain name for your website         |
 | username                 | Replace with your Linode login user name              |
 | `linode-IP-Address`      | Replace with IP address of your Linode server         |
-| site-name                | Replace with the name of your Hugo static website     |
-| github-usename           | Replace with your GitHub user name                    |
-| my-static-site-name      | Replace with the name of your static website          |
+| static-site-name         | Replace with the name of your Hugo static website     |
+| github-username          | Replace with your GitHub user name                    |
 
 
 Begin by completing the following guides if you are getting started with Linode for the first time.
@@ -472,7 +472,7 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh username@linode-IP-Address git -C /home/username/sites/site-name/ pull
+          ssh username@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
 ```
 
 Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build). It is available in the Wercker Registry. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registry page and select arjen / hugo-build. A description of additional Hugo build configurations are provided in this Registry item.
@@ -503,7 +503,7 @@ ssh username@linode-IP-Address
 mkdir sites
 cd sites
 git init
-git clone https://github.com/git-username/my-static-site-name.git
+git clone https://github.com/github-username/static-site-name.git
 
 ```
 
@@ -550,7 +550,7 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh wercker@linode-IP-Address git -C /home/username/sites/site-name/ pull
+          ssh wercker@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
 ```
 
 {{< note >}}
@@ -580,7 +580,7 @@ deploy:
     - script:
         name: Static site update on remote Linode
         code: |
-          ssh username@linode-IP-Address git -C ~/sites/site-name/ pull
+          ssh username@linode-IP-Address git -C ~/sites/static-site-name/ pull
 ```
 
 <p align="center">
@@ -786,7 +786,7 @@ Clearly, what we need is something similar to `http://example.com/css/style.css`
 
     cd ~
     cd hugo
-    hugo server -t YOUR-TEMPLATE-NAME -D --baseUrl="http://blog.YOUR-DOMAIN-NAME" --appendPort=false &
+    hugo server -t your-template-name -D --baseUrl="http://blog.your-domain-name" --appendPort=false &
 
 Running the Hugo server command outputs the listing below to the Terminal console.
 
