@@ -626,7 +626,7 @@ If the Nginx server is running as expected the following output should be displa
 ```
 
 
-## Configuring Nginx
+## Configuring Nginx for Hugo Server
 
 There are a number of commands that will become necessary for starting, stopping, reloading, and checking the status of the nginx server as changes are made to the nginx server configuration file `/etc/nginx/sites-available/default`.
 
