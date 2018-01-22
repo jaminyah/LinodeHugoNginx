@@ -122,13 +122,19 @@ The above is given as an example. Follow the instructions for your specific doma
 
 ## Adding Blog Subdomain
 
-One to the things you may want to do is add a subdomain to your domain and have this URL point to your blog articles. For example if your domain is `http://example.com` adding a blog subdomain creates `http://blog.example.com`. Log into your Linode server account and select the DNS Manager tab.
+One to the things you may want to do is add a subdomain to your domain and have this URL point to your blog articles. For example if your domain is `http://example.com` adding a blog subdomain creates `http://blog.example.com`. Navigate to [linode.com](https://www.linode.com/) and log into your Linode server account. Select the DNS Manager tab.
+
+<p align="center">
+  <img src="/images/DNSManager.jpg" alt="DNS Manager" /> 
+</p>
+
+DNS Manager lists domains linked to your Linode account. Let's assume that domains, example.com and example.net are associated with this Linode account. Select the first domain in the list and focus on the section titled A/AAAA Records.
 
 <p align="center">
   <img src="/images/AAAA.jpg" alt="AAAA records" /> 
 </p>
 
-In the section for A/AAAA Records select the link "Add a new A record".  For Hostname add `http://blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
+In A/AAAA Records select the link "Add a new A record".  For Hostname add `http://blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
 
 <p align="center">
   <img src="/images/EditAAAA.jpg" alt="Editing AAAA records" /> 
