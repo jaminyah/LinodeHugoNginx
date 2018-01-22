@@ -72,17 +72,17 @@ Begin by updating Ubuntu if you have an existing Ubuntu installation and have pr
 
 This guide provides instructions on developing a static website, with Hugo static site generator, and building and deploying this static site to Linode production servers. A brief discussion of the major sections of this guide is presented next.
 
-*  Point Domain name to Linode Servers - Provides instructions for pointing a registered domain name to your Linode server. It also includes steps for adding a `blog` subdomain.
+*  __Point Domain name to Linode Servers__ - Provides instructions for pointing a registered domain name to your Linode server. It also includes steps for adding a `blog` subdomain.
 
-*  Principles of Static Site Generators - Having a big picture understanding of the general concepts of static site generators can be very useful to understanding what needs to be done in order to get a static site up and running on a production server. 
+*  __Static Site Generator Principles__ - Having a big picture understanding of the general concepts of static site generators can be very useful to understanding what needs to be done in order to get a static site up and running on a production server. 
 
-*  Development Environment - Getting started with Hugo can be a challenging task. Creating a static site with Hugo begins with installing the Hugo application locally on a computer, such as a desktop or laptop. This section provides references to instructions on installing Hugo locally and creating the first blog post.
+*  __The Development Environment__ - Getting started with Hugo can be a challenging task. Creating a static site with Hugo begins with installing the Hugo application locally on a computer, such as a desktop or laptop. This section provides references to instructions on installing Hugo locally and creating the first blog post.
 
-*  Deployment Environment - Once the static site is created and tested locally, the files need to be version controlled and transferred from the development environment to the production server. Remote version control with GitHub is discussed. In addition, two approaches to moving the static site to production are presented. First is using Rsync to deploy and update the static site on the production server. Second is using Wercker, continuous integration tool, for automated build and deployment of the static site to the production server.
+*  __The Deployment Environment__ - Once the static site is created and tested locally, the files need to be version controlled and transferred from the development environment to the production server. Remote version control with GitHub is discussed. In addition, two approaches to moving the static site to production are presented. First is using Rsync to deploy and update the static site on the production server. Second is using Wercker, continuous integration tool, for automated build and deployment of the static site to the production server.
 
-*  Production Environment - There are several approaches to running a static site on a production server so that the site can be accessible to the outside world with a web browser. Two cases are considered. First is serving the files created by the Hugo, static site generator, with Nginx. In this case, the subdomain `http://coder.example.com` is used to access the site. The second is serving the site with the Hugo server running on the production server. Nginx is configured to reverse proxy the Hugo server so that the site is available at a URL, such as `http://blog.example.com` .
+*  __The Production Environment__ - There are several approaches to running a static site on a production server so that the site can be accessible to the outside world with a web browser. Two cases are considered. First is serving the files created by the Hugo, static site generator, with Nginx. In this case, the subdomain `http://coder.example.com` is used to access the site. The second is serving the site with the Hugo server running on the production server. Nginx is configured to reverse proxy the Hugo server so that the site is available at a URL, such as `http://blog.example.com` .
 
-*  Learning more about Hugo - This section includes references to video tutorials and other resources that can be used to gain further practical understanding of using Hugo.
+*  __Learning more about Hugo__ - This section includes references to video tutorials and other resources that can be used to gain further practical understanding of using Hugo.
 
 
 ## Point Domain name to Linode Servers
@@ -164,7 +164,7 @@ Your IP address can be found by selecting the Linodes tab.
 Replace example.com with the domain name that was selected in the Domain Zone column of the DNS Manager tab. Use the `Default` setting for the TTL item. Save all changes to A/AAAA Record. Subdomain `blog` should now appear in the list of A/AAAA Records. 
 
 
-## Logging into Linode Server with SSH
+### Logging into Linode Server with SSH
 
 Open a Terminal window and log in to your Linode server at the command line with SSH. A typical log in command should look as follows:
 
@@ -178,7 +178,7 @@ Enter the `IPAddress` of your Linode server.
 Further clarification on logging in with SSH can be found in the [Getting started](/docs/getting-started) guide in the section titled "*Log In for the First Time*". 
 
 
-## Installing Hugo
+### Installing Hugo
 
 Use the `wget` command to get the latest Hugo release files. Latest releases are located at [Hugo releases](https://github.com/gohugoio/hugo/releases). An example command is shown:
 
@@ -231,12 +231,12 @@ Flags:
 
 ```
 
-## Principles Static Site Generators
+## Static Site Generator Principles
 
 *** TBD **
 
 
-## Development Environment
+## The Development Environment
 
 ### Creating a Hugo Blog
 
@@ -260,7 +260,7 @@ Generally, developers focus on writing code, unit testing and incorporating code
 There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), Wercker and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's first discuss using `Rsync`.
 
 
-## Deployment Environment
+## The Deployment Environment
 
 ### Deploy with Rsync
 
@@ -622,19 +622,11 @@ deploy:
 </p>
 
 
-## Production Enviroment
+## The Production Enviroment
+
+Here two approaches to presenting the contents of the static site so that it is accessible with a web browser is presented. The first and most efficient approach is serving the files generated by the Hugo static site generator with Nginx. The second approach is serving the static site by running the Hugo server component as a web server in production and configuring Nginx as a reverse proxy. Let's start by installing Nginx on the production server.
 
 ### Installing Nginx
-
-Now that you have a basic Hugo blog post created, the next issue is making it accessible to the public using your domain name. Hugo blog has a built-in server that runs, by default, on port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
-
-Providing direct port access can increase vulnerabilities to web based attacks. Using Nginx protects your Linode server against common vulnerabilities and can be configured to make several server instances publicly accessible on port 80 by adding subdomains to your domain name. 
-
-In our case we added `blog` subdomain `http://blog.example.com`.
-
-<p align="center">
-  <img src="/images/Nginxrevproxy.jpg" alt="Nginx as Reverse proxy" /> 
-</p>
 
 Let's [install Nginx](http://nginx.org/en/linux_packages.html) and check that it is running.
 
@@ -661,13 +653,7 @@ If the Nginx server is running as expected the following output should be displa
            └─2374 nginx: worker process  
 ```
 
-### Serving Static Site with Nginx
-
-// *** TBD ***
-
-### Configuring Nginx for Hugo Server
-
-There are a number of commands that will become necessary for starting, stopping, reloading, and checking the status of the nginx server as changes are made to the nginx server configuration file `/etc/nginx/sites-available/default`.
+There are a number of commands that will become necessary for starting, stopping, reloading, and checking the status of the Nginx server as changes are made to the Nginx server configuration files located at `/etc/nginx/sites-available`.
 
     // Check server status
     systemctl status nginx
@@ -681,7 +667,29 @@ There are a number of commands that will become necessary for starting, stopping
     // Starting Nginx server
     sudo systemctl start nginx
 
-Making your Hugo blog publicly available with Nginx can be challenging. Most important is getting the Nginx configuration correct. The arrangement below shows a configuration for two server applications. The first allows `http://example.com/` to access a server application running on port 8081. The second `http://blog.example.com/` will access a Hugo blog running on port 1313. 
+
+### Serving Static Site with Nginx
+
+Now that the files of the static site have been created by the Wercker build pipeline and deployed to the Linode production server with the Wercker deploy-production pipeline, the next issue is making the site accessible to the public using your domain name. This example, uses subdomain `http://coder.example.com` . Follow the instructions in the section titled, "Adding Blog Subdomain", to create a new subdomain, named `coder`.
+
+
+
+
+
+
+### Configuring Nginx for Hugo Server
+
+Hugo blog has a built-in server that runs, by default, on port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
+
+Providing direct port access can increase vulnerabilities to web based attacks. Using Nginx protects your Linode server against common vulnerabilities and can be configured to make several server instances publicly accessible on port 80 by adding subdomains to your domain name. 
+
+In our case we added `blog` subdomain `http://blog.example.com`.
+
+<p align="center">
+  <img src="/images/Nginxrevproxy.jpg" alt="Nginx as Reverse proxy" /> 
+</p>
+
+The arrangement below shows a configuration for two server applications. The first allows `http://example.com/` to access a server application running on port 8081. The second `http://blog.example.com/` will access a Hugo blog running on port 1313. 
 
 ```bash
 # Default server configuration
