@@ -128,21 +128,23 @@ One to the things you may want to do is add a subdomain to your domain and have 
   <img src="/images/DNSManager.jpg" alt="DNS Manager" /> 
 </p>
 
-DNS Manager lists domains linked to your Linode account. Let's assume that domains, example.com and example.net are associated with this Linode account. Select the first domain in the list and focus on the section titled A/AAAA Records.
+DNS Manager lists domains linked to your Linode account. Let's assume that domains example.com and example.net are associated with this Linode account. Select the first domain in the list and focus on the section titled A/AAAA Records.
 
 <p align="center">
   <img src="/images/AAAA.jpg" alt="AAAA records" /> 
 </p>
 
-In A/AAAA Records select the link "Add a new A record".  For Hostname add `http://blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
+In A/AAAA Records select the link "Add a new A/AAAA record".  For Hostname add `blog.example.com`. In the IP Address field enter the IP address of your Linode server. 
 
 <p align="center">
   <img src="/images/EditAAAA.jpg" alt="Editing AAAA records" /> 
 </p>
 
 {{< note >}}
-Your IP address can be found by selecting the Linodes tab. Replace `example.com` with your registered domain name. Save the Changes to the A/AAAA Record. Subdomain `blog` should now appear in the list of A/AAAA Records.
+Your IP address can be found by selecting the Linodes tab. 
 {{< /note >}}
+
+Replace example.com with the domain name that was selected in the Domain Zone column of the DNS Manager tab. Use the `Default` setting for the TTL item. Save all changes to A/AAAA Record. Subdomain `blog` should now appear in the list of A/AAAA Records. 
 
 
 ## Logging into your Linode Server
