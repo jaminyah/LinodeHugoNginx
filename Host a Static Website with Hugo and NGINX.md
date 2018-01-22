@@ -388,35 +388,27 @@ An option to trigger a build is available on this Wercker page. Do not trigger a
 
 #### Creating Workflows
 
-Let's examine the structure of the default wercker.yml file that will be added to your static site directory. Note that there are two pipelines shown; build and deploy.
+Let's examine the structure of the default wercker.yml file that will be added to your static site directory. Note that there is one pipeline shown; deploy.
 
 ```bash
 box: debian
-build:
-  steps:
 
 deploy:
   steps:
  
 ```
 
-Wercker application, therefore, has to have these two pipelines in its workflow. By default, a build pipeline should already be created in the workflow. Let's add the deploy pipeline to the workflow. Begin by selecting the Wercker Workflows tab. Select the "Add a new pipeline" button. In the name field, of the dialog, enter `deploy-production`. For `YML Pipeline name` enter `deploy`. Use the Hook type default setting.
+Wercker application, therefore, only has to have one pipeline in its workflow. By default, a build pipeline should already be created in the workflow. Let's change the existing build pipeline to match the deploy pipeline in our wercker.yml file. Begin by selecting the Wercker Workflows tab. Select the build pipeline in the list below the "Add new pipeline" button. Change the name to deploy-production and the YML Pipeline to deploy. 
 
   * __Name__: deploy-production
   * __YML Pipeline name__: deploy
-  * __Hook type__: Use default setting
 
-There should now be two piplines in the list of pipelines; build and deploy-production. Next task is to add the new pipeline, `deploy-production`, to the workflow. Select the `+` button associated with the build pipeline in the existing workflow. In the Execute pipeline drop-down list, select deploy-production. Then, add this pipeline. 
 
 <p align="center">
-  <img src="/images/wercker/add_deploy_pipeline.jpg" alt="Add deploy pipeline" /> 
+  <img src="/images/wercker/deploy_production_pipeline.jpg" alt="Deploy production pipeline" /> 
 </p>
 
-The workflow now has build and deploy pipelines that correspond with the build and deploy pipelines in the wercker.yml file. Note that the wercker.yml file will be created shortly.
-
-<p align="center">
-  <img src="/images/wercker/pipeline_success.jpg" alt="Successful pipeline" /> 
-</p>
+The workflow now has a deploy pipeline that corresponds with the deploy pipeline in the wercker.yml file. Note that the wercker.yml file will be created shortly.
 
 
 #### Creating SSH Keys
@@ -485,16 +477,6 @@ Create a file, wercker.yml, on your local machine in the directory containing yo
 
 ```bash
 box: debian
-build:
-  steps:
-    - arjen/hugo-build@1.25.2: 
-        version: "0.32.3"
-        theme: material-design
-        flags: --buildDrafts=true
-        disable_pygments: true
-        clean_before: true
-        prod_branches: master
-
 deploy:
   steps:
     - install-packages:
@@ -512,12 +494,6 @@ deploy:
         code: |
           ssh username@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
 ```
-
-Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build). It is available in the Wercker Registry. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registry page and select arjen / hugo-build. A description of additional Hugo build configurations are provided in this Registry item.
-
-<p align="center">
-  <img src="/images/wercker/arjen.jpg" alt="Arjen App" /> 
-</p>
 
 There are a few important items to note in the wercker.yml deploy pipeline.
 
@@ -548,59 +524,22 @@ git clone https://github.com/github-username/static-site-name.git
 
 #### Successful Wercker Build and Deployment
 
-From your local development machine, push the wercker.yml file to your GitHub static site repository. Wercker will now trigger the workflow containing the build and deploy-production pipelines. If there are no issues, the workflow will execute successfully.
+From your local development machine, push the wercker.yml file to your GitHub static site repository. Wercker will now trigger the workflow containing the deploy-production pipeline. If there are no issues, the workflow will execute successfully.
 
 <p align="center">
-  <img src="/images/wercker/deploy_success.jpg" alt="Deploy success" /> 
+  <img src="/images/wercker/deploy_production_success.jpg" alt="Deploy production success" /> 
 </p>
 
 
 #### Tips and Tricks with Wercker
 
-1. If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding only a deploy-production pipeline. This generates an error during the Wercker Run phase.
+1. If you are new to using Wercker, it is very possible that you may create a pipeline incorrectly. One such case is deleting the default build pipeline and adding a deploy-production pipeline whose wercker.yml file is configured incorrectly. This generates an error during the Wercker Run phase.
 
 <p align="center">
   <img src="/images/wercker/deploy_error.jpg" alt="Workflow error" /> 
 </p>
 
-2. Incorrect scripts in the wercker.yml file will result in a failure in executing the deploy pipeline.
-
-<p align="center">
-  <img src="/images/wercker/linode_update_failed.jpg" alt="Linode update error" /> 
-</p>
-
-
-3. It may be tempting to look at a Wercker console error output and guess that the username in the wercker.yml script should be "wercker" as in `export WERCKER_STEP_OWNER="wercker"`. An incorrect username, in the script code, can result in a "public key error" output in the Wercker console output. 
-
-```bash
-deploy:
-  steps:
-    - install-packages:
-        packages: openssh-client openssh-server
-
-    - add-to-known_hosts:
-        hostname: 12.34.56.789
-        local: true
-
-    - add-ssh-key:
-        keyname: linode
- 
-    - script:
-        name: Static site update on remote Linode
-        code: |
-          ssh wercker@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
-```
-
-{{< note >}}
-The username should be the username that was used to SSH into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
-{{< /note >}}
-
-<p align="center">
-  <img src="/images/wercker/publickey_error.jpg" alt="Public key error" /> 
-</p>
-
-
-4. Using a home directory shortcut `~/sites/site-name/`, in the script code, can result in a "Permission denied" error in the Wercker console output.
+2. Using a home directory shortcut `~/sites/site-name/`, in the script code, can result in a "Permission denied" error in the Wercker console output.
 
 ```bash
 deploy:
@@ -628,7 +567,7 @@ deploy:
 
 ## The Production Enviroment: Case 1
 
-Here two approaches to presenting the contents of the static site so that it is accessible with a web browser is presented. The first and most efficient approach is serving the files generated by the Hugo static site generator with Nginx. The second approach is serving the static site by running the Hugo server component as a web server in production and configuring Nginx as a reverse proxy. Let's start by installing Nginx on the production server.
+The second approach is serving the static site by running the Hugo server component as a web server in production and configuring Nginx as a reverse proxy. Let's start by installing Nginx on the production server.
 
 ### Installing Nginx
 
@@ -949,13 +888,88 @@ In this case, `ps aux | grep hugo` command can be used to verify that the server
 
 // *** TBD *** Build and deploy with Wercker
 
+### Creating wercker.yml file
+
+Create a file, wercker.yml, on your local machine in the directory containing your static website. One option is to create the file at the command line with the command `touch wercker.yml`. Add the following contents to the file.
+
+```bash
+box: debian
+build:
+  steps:
+    - arjen/hugo-build@1.25.2: 
+        version: "0.32.3"
+        theme: material-design
+        flags: --buildDrafts=true
+        disable_pygments: true
+        clean_before: true
+        prod_branches: master
+
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
+
+    - add-to-known_hosts:
+        hostname: linode-IP-Address
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh username@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
+```
+
+Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build). It is available in the Wercker Registry. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registry page and select arjen / hugo-build. A description of additional Hugo build configurations are provided in this Registry item.
+
+<p align="center">
+  <img src="/images/wercker/arjen.jpg" alt="Arjen App" /> 
+</p>
+
+
+### Tips and Tricks with Wercker
+
+1. It may be tempting to look at a Wercker console error output and guess that the username in the wercker.yml script should be "wercker" as in `export WERCKER_STEP_OWNER="wercker"`. An incorrect username, in the script code, can result in a "public key error" output in the Wercker console output. 
+
+```bash
+deploy:
+  steps:
+    - install-packages:
+        packages: openssh-client openssh-server
+
+    - add-to-known_hosts:
+        hostname: 12.34.56.789
+        local: true
+
+    - add-ssh-key:
+        keyname: linode
+ 
+    - script:
+        name: Static site update on remote Linode
+        code: |
+          ssh wercker@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
+```
+
+{{< note >}}
+The username should be the username that was used to SSH into the Linode server and add the linode_PUBLIC key to the .ssh/authorized file. This step was performed in the "Add Public Key to Linode User Account" section.
+{{< /note >}}
+
+<p align="center">
+  <img src="/images/wercker/publickey_error.jpg" alt="Public key error" /> 
+</p>
+
+
+
 ## The Production Environment: Case 2
 
 Now that the files of the static site have been created by the Wercker build pipeline and deployed to the Linode production server with the Wercker deploy-production pipeline, the next issue is making the site accessible to the public using your domain name. This example, uses subdomain `http://coder.example.com` . Follow the instructions in the section titled, "Adding Blog Subdomain", to create a new subdomain, named `coder`.
 
+
 ### Serving Static Site with Nginx
 
-
+Here two approaches to presenting the contents of the static site so that it is accessible with a web browser is presented. The first and most efficient approach is serving the files generated by the Hugo static site generator with Nginx. 
 
 ## Learning more about Hugo
 
