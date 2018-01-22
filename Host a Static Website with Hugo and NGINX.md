@@ -68,7 +68,24 @@ Begin by updating Ubuntu if you have an existing Ubuntu installation and have pr
     sudo apt-get update
 
 
-## Pointing your Domain to Linode
+## Guide Overview
+
+This guide provides instructions on developing a static website, with Hugo static site generator, and building and deploying this static site to Linode production servers. A brief discussion of the major sections of this guide is presented next.
+
+*  Point Domain name to Linode Servers - Provides instructions for pointing a registered domain name to your Linode server. It also includes steps for adding a `blog` subdomain.
+
+*  Principles of Static Site Generators - Having a big picture understanding of the general concepts of static site generators can be very useful to understanding what needs to be done in order to get a static site up and running on a production server. 
+
+*  Development Environment - Getting started with Hugo can be a challenging task. Creating a static site with Hugo begins with installing the Hugo application locally on a computer, such as a desktop or laptop. This section provides references to instructions on installing Hugo locally and creating the first blog post.
+
+*  Deployment Environment - Once the static site is created and tested locally, the files need to be version controlled and transferred from the development environment to the production server. Remote version control with GitHub is discussed. In addition, two approaches to moving the static site to production are presented. First is using Rsync to deploy and update the static site on the production server. Second is using Wercker, continuous integration tool, for automated build and deployment of the static site to the production server.
+
+*  Production Environment - There are several approaches to running a static site on a production server so that the site can be accessible to the outside world with a web browser. Two cases are considered. First is serving the files created by the Hugo, static site generator, with Nginx. In this case, the subdomain `http://coder.example.com` is used to access the site. The second is serving the site with the Hugo server running on the production server. Nginx is configured to reverse proxy the Hugo server so that the site is available at a URL, such as `http://blog.example.com` .
+
+*  Learning more about Hugo - This section includes references to video tutorials and other resources that can be used to gain further practical understanding of using Hugo.
+
+
+## Point Domain name to Linode Servers
 
 There are two aspects to pointing your registered domain name to your Linode server. 
 1. Linode DNS Manager needs to be configured with your domain name.
@@ -120,7 +137,7 @@ The following name server entries should be made:
 The above is given as an example. Follow the instructions for your specific domain provider.
 
 
-## Adding Blog Subdomain
+### Adding Blog Subdomain
 
 One to the things you may want to do is add a subdomain to your domain and have this URL point to your blog articles. For example if your domain is `http://example.com` adding a blog subdomain creates `http://blog.example.com`. Navigate to [linode.com](https://www.linode.com/) and log into your Linode server account. Select the DNS Manager tab.
 
@@ -147,7 +164,7 @@ Your IP address can be found by selecting the Linodes tab.
 Replace example.com with the domain name that was selected in the Domain Zone column of the DNS Manager tab. Use the `Default` setting for the TTL item. Save all changes to A/AAAA Record. Subdomain `blog` should now appear in the list of A/AAAA Records. 
 
 
-## Logging into your Linode Server
+## Logging into Linode Server with SSH
 
 Open a Terminal window and log in to your Linode server at the command line with SSH. A typical log in command should look as follows:
 
@@ -214,8 +231,14 @@ Flags:
 
 ```
 
+## Principles Static Site Generators
 
-## Creating a Blog Article
+*** TBD **
+
+
+## Development Environment
+
+### Creating a Hugo Blog
 
 If you are getting started with creating blog articles with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of the static website is performed on your local development machine. 
 
@@ -226,7 +249,7 @@ If you are getting started with creating blog articles with Hugo, the best sourc
 Once code review and system testing are complete, it is then time to check the code into a version control system, such as GitHub. Build and deploy phases are performed next followed by release to production.
 
 
-## Building and Updating a Static Site
+### Building and Updating a Static Site
 
 Generally, developers focus on writing code, unit testing and incorporating code review changes. For the most part, many developers shy away from the inner details of deploying applications to the production environment. This task is usually handled by the DevOps team or backend crew. In this section, we will discuss moving the static site from the development environment to the production server.
 
@@ -236,7 +259,10 @@ Generally, developers focus on writing code, unit testing and incorporating code
 
 There are several approaches to deploying a static site, after it has been through the development cycle. [Travis-CI](https://travis-ci.org), [Jenkins](https://jenkins.io), Wercker and [Rsync](https://rsync.samba.org) are among the more popular tools, used to deploy to a production server such as Linode. Let's first discuss using `Rsync`.
 
-### Rsync
+
+## Deployment Environment
+
+### Deploy with Rsync
 
 You may decide that yours is a small operation and so you develop and test on your local machine as well as use a remote version control service such as GitHub to backup your local files. Then you wish to transfer the files of your static site directly to the Linode production server without an automated build and deploy tool. If this is the case, Rsync is a good tool for manually syncing your files with the production server.
 
@@ -596,7 +622,9 @@ deploy:
 </p>
 
 
-## Installing Nginx
+## Production Enviroment
+
+### Installing Nginx
 
 Now that you have a basic Hugo blog post created, the next issue is making it accessible to the public using your domain name. Hugo blog has a built-in server that runs, by default, on port 1313. This means that if Hugo was installed on your local machine, such as a desktop or laptop, it is accessible with `http://localhost:1313/`. 
 
@@ -633,8 +661,11 @@ If the Nginx server is running as expected the following output should be displa
            └─2374 nginx: worker process  
 ```
 
+### Serving Static Site with Nginx
 
-## Configuring Nginx for Hugo Server
+// *** TBD ***
+
+### Configuring Nginx for Hugo Server
 
 There are a number of commands that will become necessary for starting, stopping, reloading, and checking the status of the nginx server as changes are made to the nginx server configuration file `/etc/nginx/sites-available/default`.
 
@@ -741,7 +772,7 @@ Press the **Escape** key to enter command mode. Command mode allows several acti
 Press `i` to enter insert mode. Insert mode allows text to be added or deleted from the config file.
 
 
-## Running Hugo Server at the Command Line
+### Running Hugo Server at the Command Line
 
 An equally important issue to configuring Nginx correctly, is issuing the correct command to start the Hugo server. Consider the following command which runs blog articles in draft stage using the [Material Design](https://themes.gohugo.io/material-design/) theme.
 
@@ -832,18 +863,18 @@ We should now be able to access our blog article in a web browser with `http://b
 </p>
 
 
-## Tips and Tricks
+### Tips and Tricks
 
 Setting up Hugo can present unexpected challenges. A few of the most typical issues are addressed here.
 
-### Config File not Found Error
+#### Config File not Found Error
 
 Running the command to start the Hugo server from outside the Hugo directory will result in a "Config file not found error". To solve this issue, change into the Hugo directory before attempting to start the Hugo server.
 
     Error: Unable to locate Config file. Perhaps you need to create a new site.
        Run `hugo help new` for details. (Config File "config" Not Found in "[/home/username]")
 
-### Failed to Stop Nginx.Service
+#### Failed to Stop Nginx.Service
 
 It is very possible that you may attempt to stop or reload the Nginx server and see the following console output:
 
@@ -852,7 +883,7 @@ It is very possible that you may attempt to stop or reload the Nginx server and 
 
 To start, stop, or reload Nginx it is necessary to use the `sudo` prefix along with the command to stop, reload or start Nginx. That is, `sudo systemctl stop nginx`, `sudo systemctl reload nginx`, `sudo systemctl start nginx`.
 
-### Hugo Server did not Shutdown Using **CTRL+C**
+#### Hugo Server did not Shutdown Using **CTRL+C**
 
 There are times when shutting down the server with **CTRL+C** doesn't do the trick. Quite often, this is only apparent the next time we attempt to startup the Hugo server. For example, the Terminal console may display output to the effect, "Web Server is available at `http://localhost:12345`". 
 
@@ -901,7 +932,7 @@ Enter the `ps aux | grep hugo` command to show that no hugo servers are runnng a
 
     username 16628  0.0  0.1  14224  1020 pts/1    S+   15:29   0:00 grep --color=auto hugo
 
-### Web Browser Returns Bad Gateway
+#### Web Browser Returns Bad Gateway
 
 "Bad Gateway" can be returned by the web browser if the Hugo server is not running, or is not running on port 1313. 
 
