@@ -182,69 +182,14 @@ Enter the `IPAddress` of your Linode server.
 Further clarification on logging in with SSH can be found in the [Getting started](/docs/getting-started) guide in the section titled "*Log In for the First Time*". 
 
 
-### Installing Hugo
-
-Use the `wget` command to get the latest Hugo release files. Latest releases are located at [Hugo releases](https://github.com/gohugoio/hugo/releases). An example command is shown:
-
-    wget https://github.com/gohugoio/hugo/releases/download/v0.31.1/hugo_0.31.1_Linux-64bit.deb
-
-{{< note >}}
-To get the link to the release you wish to obtain right click on the release link and select Copy Link. Paste in the Terminal window.
-{{< /note >}}
-
-<p align="center">
-  <img src="/images/CopyLink.jpg" alt="Copy release links" /> 
-</p>
-
-Install the package using the Terminal console with the following command:
-
-    sudo dpk -i hugo *.deb
-
-Installation of Hugo can be confirmed by checking the version of Hugo that was installed:
-
-    hugo version
-
-Another way to test the installation is with the Hugo help command:
-
-    hugo help
-
-Results should be similar to:
-
-```bash
-hugo is the main command, used to build your Hugo site.
-
-Hugo is a Fast and Flexible Static Site Generator
-built with love by spf13 and friends in Go.
-
-Complete documentation is available at http://gohugo.io/.
-
-Usage:
-  hugo [flags]
-  hugo [command]
-
-Available Commands:
-  benchmark   Benchmark Hugo by building a site a number of times.
-  config      Print the site configuration
-  convert     Convert your content to different formats
-  env         Print Hugo version and environment info
-  version     Print the version number of Hugo
-
-Flags:
-  -b, --baseURL string             hostname (and path) to the root, e.g. http://spf13.com/
-  -D, --buildDrafts                include content marked as draft
-
-```
-
 ## Static Site Generator Principles
 
 *** TBD **
 
 
-## The Development Environment
+## The Development Environment: Case I
 
-### Creating a Static Site with Hugo
-
-If you are getting started with creating blog articles with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of the static website is performed on your local development machine. 
+If you are getting started with creating static sites with Hugo, the best source of accurate and updated instructions is the Hugo site [Getting Started Quick Start Guide](https://gohugo.io/getting-started/quick-start/). Instructions begin at Step 2: *Create a New Site*. It is important to note that development and unit testing of the static website is performed on your local development machine. 
 
 <p align="center">
   <img src="/images/sw_dev_sequence.jpg" alt="Software development sequence" /> 
@@ -506,10 +451,6 @@ There are a few important items to note in the wercker.yml deploy pipeline.
 Pushing the wercker.yml file to GitHub at this time will trigger the workflow in Wercker, which will result in an error.
 {{ /note }}
 
-<p align="center">
-  <img src="/images/wercker/build_error.jpg" alt="Build error" /> 
-</p>
-
 There is one last thing to do. Log into your Linode server with the `ssh` command. In your home directory create a directory called sites. Change into the sites directory and clone the GitHub directory containing your static site.
 
 ```bash
@@ -623,7 +564,31 @@ In our case we added `blog` subdomain `http://blog.example.com`.
   <img src="/images/Nginxrevproxy.jpg" alt="Nginx as Reverse proxy" /> 
 </p>
 
-The arrangement below shows a configuration for two server applications. The first allows `http://example.com/` to access a server application running on port 8081. The second `http://blog.example.com/` will access a Hugo blog running on port 1313. 
+Nginx configuration files are located at `/etc/nginx/sites-available`. Use the following commands to list the existing configuration files.
+
+```bash
+cd ~/
+cd /etc/nginx/sites-available
+ls
+```
+
+For a new Nginx installation, there should all ready be a configuration file named `default`. Generally, the /sites/available directory will contain several Nginx configuration files. Directory /etc/nginx/sites-enabled will contain a symbolic link to each configuration file that will be active. See the default symbolic link by doing the following:
+
+```bash
+cd ~/
+cd /etc/nginx/sites-enabled
+ls
+```
+
+In this guide, two approaches to configuring Nginx will be shown. The first uses the existing default configuration file that is located in the /etc/nginx/sites-available directory. In the second approach, a new configuration file will be added to /etc/nginx/sites-available . A new symbolic link, to this configuration file, will then be added to the /etc/nginx/sites-enabled directory.
+
+{{< note >}}
+Both configuration techniques are shown here for reference purposes. Using both configuration techniques will result in Nginx run errors. Choose only one of the two presented.
+{{< /note >}}
+
+##### Modifying Default Configuration
+
+Let's add a configuration, for the Hugo server, to the existing default configuration file. The arrangement below shows a default configuration file for two server applications. The first allows `http://example.com/` to access a server application running on port 8081. The second `http://blog.example.com/` will access a Hugo blog running on port 1313. 
 
 ```bash
 # Default server configuration
@@ -650,8 +615,6 @@ server {
 server {
         listen 80;
 
-        #root /var/www/html;
-
         server_name blog.example.com;
 
         location / {
@@ -663,11 +626,11 @@ server {
 }
 ```
 
-For the purposes of this guide, begin by editing your Nginx server configuration with the [Vim](http://www.vim.org/) text editor:
+For the purposes of this guide, begin by editing the Nginx server default configuration file with the [Vim](http://www.vim.org/) text editor:
 
     sudo vim /etc/nginx/sites-available/default
 
-Add the second server block, as shown in the configuration above, to your existing Nginx server configuration.
+Add a second server block, as shown in the configuration above, to the default Nginx server configuration.
 
 {{< note >}}
 Replace `example.com` with your domain name.
@@ -696,13 +659,13 @@ To end editing of the config file press the **Escape** key, then enter `:wq`. Ex
 [Nano editor](https://www.nano-editor.org/) can also be used to edit the Nginx configuration file.
 {{< /note >}}
 
-### Vim Editor Basics
+###### Vim Editor Basics
 
 The Vim editor has two modes of operation.
 
 1. Command Mode
 
-Press the **Escape** key to enter command mode. Command mode allows several actions such as saving the file and exiting, deleting a character or a line of text, and exiting without saving changes to the file.
+Press the **Escape** key to enter Command mode. Command mode allows several actions such as saving the file and exiting, deleting a character or a line of text, and exiting without saving changes to the file.
 
   * dd  - Delete a line of text
   * x   - Delete a single character
@@ -714,9 +677,113 @@ Press the **Escape** key to enter command mode. Command mode allows several acti
 Press `i` to enter insert mode. Insert mode allows text to be added or deleted from the config file.
 
 
+##### Creating a new Configuration File
+
+The concept here is to create a new configuration file in /etc/nginx/sites-available directory. Then create a symbolic link to this configuration file in /etc/nginx/sites-enabled directory. Replace example.com with the domain name of your static site.
+
+```bash
+cd ~/
+cd /etc/nginx/sites-available
+sudo vim blog.example.com
+```
+
+This should create a blank file. Enable the VIM editor insert mode by selecting letter `i` on the keyboard and paste the configuration shown below into the file.
+
+```bash
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name blog.example.com;
+
+        location / {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header Host $host;
+                proxy_pass http://127.0.0.1:1313;
+        }
+}
+```
+
+Press the **Escape** key to exit editor Insert mode and enter the editor Command mode. Enter `:wq` and execute the command with the **Enter** key. This saves the file.
+
+
+#### Adding new Symbolic Link
+
+The general command for creating a symbolic link is, `ln -s <SOURCE_FILE> <DESTINATION_FILE>`. To create a symbolic link to the newly created Nginx configuration file, named blog.example.com, do the following:
+
+```bash
+cd ~/
+ln -s /etc/nginx/sites-available/blog.example.com /etc/nginx/sites-enabled/blog.example.com
+```
+
+A new symbolic link is now created in the sites-enabled directory. Verify as shown below.
+
+```bash
+cd ~/
+cd /etc/nginx/sites-enabled
+ls
+```
+
+Nginx configurations for reverse proxying the Hugo server, running on the Linode production server, is now complete. Before the static site can be accessed in a web browser at URL , `http://blog.example.com`, Hugo server needs to be installed on the Linode production servers. Let's install the latest version of Hugo.
+
+
+### Installing Hugo in Production
+
+Log into your Linode production server with the SSH command. Use the `wget` command to get the latest Hugo release files. Latest releases are located at [Hugo releases](https://github.com/gohugoio/hugo/releases). An example command is shown:
+
+    wget https://github.com/gohugoio/hugo/releases/download/v0.31.1/hugo_0.31.1_Linux-64bit.deb
+
+{{< note >}}
+To get the link to the release you wish to obtain right click on the release link and select Copy Link. Paste in the Terminal window.
+{{< /note >}}
+
+<p align="center">
+  <img src="/images/CopyLink.jpg" alt="Copy release links" /> 
+</p>
+
+Install the package using the Terminal console with the following command:
+
+    sudo dpk -i hugo *.deb
+
+Installation of Hugo can be confirmed by checking the version of Hugo that was installed:
+
+    hugo version
+
+Another way to test the installation is with the Hugo help command:
+
+    hugo help
+
+Results should be similar to:
+
+```bash
+hugo is the main command, used to build your Hugo site.
+
+Hugo is a Fast and Flexible Static Site Generator
+built with love by spf13 and friends in Go.
+
+Complete documentation is available at http://gohugo.io/.
+
+Usage:
+  hugo [flags]
+  hugo [command]
+
+Available Commands:
+  benchmark   Benchmark Hugo by building a site a number of times.
+  config      Print the site configuration
+  convert     Convert your content to different formats
+  env         Print Hugo version and environment info
+  version     Print the version number of Hugo
+
+Flags:
+  -b, --baseURL string             hostname (and path) to the root, e.g. http://spf13.com/
+  -D, --buildDrafts                include content marked as draft
+
+```
+
 ### Running Hugo Server at the Command Line
 
-An equally important issue to configuring Nginx correctly, is issuing the correct command to start the Hugo server. Consider the following command which runs blog articles in draft stage using the [Material Design](https://themes.gohugo.io/material-design/) theme.
+Equally important to configuring Nginx correctly, is issuing the correct command to start the Hugo server. Consider the following command which runs blog articles in draft stage using the [Material Design](https://themes.gohugo.io/material-design/) theme.
 
     hugo server -t material-design -D
 
@@ -884,9 +951,14 @@ Enter the `ps aux | grep hugo` command to show that no hugo servers are runnng a
 
 In this case, `ps aux | grep hugo` command can be used to verify that the server is not running on port 1313.
 
-## The Deployment Environment: Case 2
 
-// *** TBD *** Build and deploy with Wercker
+## Development Environment: Case 2
+
+Case 2 demonstrates developing the static site locally then pushing the site to GitHub. Since a second Wercker application will need to link to a new GitHub repo, it is necessary to develop a new Hugo static site and push it to a new GitHub repo.
+
+## Deployment Environment: Case 2
+
+Wercker is then used to generate the files of the static site in the build pipeline. During the build phase, Wercker generates a folder named, public, which contains the files of the generated static site.
 
 ### Creating wercker.yml file
 
@@ -906,20 +978,7 @@ build:
 
 deploy:
   steps:
-    - install-packages:
-        packages: openssh-client openssh-server
-
-    - add-to-known_hosts:
-        hostname: linode-IP-Address
-        local: true
-
-    - add-ssh-key:
-        keyname: linode
  
-    - script:
-        name: Static site update on remote Linode
-        code: |
-          ssh username@linode-IP-Address git -C /home/username/sites/static-site-name/ pull
 ```
 
 Let's discuss the build pipeline in the wercker.yml file. `- arjen/hugo-build@1.25.2:` refers to a set of Hugo build instructions created by [ArjenSchwarz](https://github.com/ArjenSchwarz/wercker-step-hugo-build). It is available in the Wercker Registry. Select a new tab in your web browser and enter the URL ` https://app.wercker.com/explore`. Search for `hugo` on the Registry page and select arjen / hugo-build. A description of additional Hugo build configurations are provided in this Registry item.
